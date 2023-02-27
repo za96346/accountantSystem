@@ -39,30 +39,14 @@ app.use(session({
 
 // 登入
 app.post('/login', (req, res) => {
-	// const payload = {
-	//     username: req.body.username
-	// }
-	// const token = jwt.sign(payload, secretKey, { expiresIn: '60s' });
-	// res.send({
-	//     status: 200,
-	//     message: "登入成功!",
-	//     token
-	// });
-	const clientServerOptions = {
-		uri: 'https://workapp.tw/workApp/entry/login',
-		body: JSON.stringify({
-			Account: 'a00001',
-			Password: 'L223609254',
-		}),
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	};
-	request(clientServerOptions, (error, response) => {
-		const data = JSON.parse(response.body)
-		console.log(data.data);
-		jwt.verify(data.data, process.env.TOKEN_PASSWORD)
+	const payload = {
+	    username: req.body.username
+	}
+	const token = jwt.sign(payload, secretKey, { expiresIn: '60s' });
+	res.send({
+	    status: 200,
+	    message: "登入成功!",
+	    token
 	});
 });
 
