@@ -1,19 +1,22 @@
 <template>
-    <a-menu
-        id="dddddd"
-        v-model:openKeys="openKeys"
-        v-model:selectedKeys="selectedKeys"
-        style="width: 256px"
-        mode="inline"
-        @click="handleClick"
-    >
-        <a-sub-menu key="sub1" @titleClick="titleClick">
-            <template #title #icon>
+    <div class="rootMain">
+        <a-menu
+            id="dddddd"
+            v-model:openKeys="openKeys"
+            v-model:selectedKeys="selectedKeys"
+            style="width: 256px"
+            mode="inline"
+            @click="handleClick"
+        >
+            <a-menu-item key="/home" @titleClick="titleClick">
                 <MailOutlined />
-                扣款管理
-            </template>
-        </a-sub-menu>
-    </a-menu>
+                    扣款管理
+            </a-menu-item>
+        </a-menu>
+        <div class="article">
+            <RouterView />
+        </div>
+    </div>
 </template>
 <script lang="js">
 import { defineComponent, ref, watch } from 'vue';
@@ -21,14 +24,17 @@ import {
     MailOutlined, QqOutlined, AppstoreOutlined, SettingOutlined,
 } from '@ant-design/icons-vue';
 import { MenuProps } from 'ant-design-vue';
+import { RouterLink, RouterView, useRouter } from 'vue-router';
 
 export default defineComponent({
     components: {
-        MailOutlined,
-        QqOutlined,
-        AppstoreOutlined,
-        SettingOutlined,
-    },
+    MailOutlined,
+    QqOutlined,
+    AppstoreOutlined,
+    SettingOutlined,
+    RouterLink,
+    RouterView
+},
     setup() {
         const selectedKeys = ref(['1']);
         const openKeys = ref(['sub1']);
@@ -37,6 +43,7 @@ export default defineComponent({
         };
         const titleClick = (e) => {
             console.log('titleClick', e);
+            useRouter().push(e.key);
         };
         watch(
             () => openKeys,
@@ -61,7 +68,6 @@ export default defineComponent({
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
     width: 100vw;
     height: 100vh;
     position: relative;
@@ -72,7 +78,6 @@ export default defineComponent({
     height: inherit;
     .article {
         flex: 1;
-        position: absolute;
     }
 }
 </style>
