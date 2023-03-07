@@ -13,7 +13,11 @@
         "ecmaVersion": 6,
         "sourceType": "module",
         "ecmaFeatures": {
-            "modules": true
+            "modules": true,
+            "arrowFunctions": true,
+            "binaryLiterals": true,
+            "blockBindings": true,
+            "classes": true
         }
     },
     "plugins": [
@@ -21,7 +25,8 @@
     ],
     "rules": {
         "indent": ["error", 4],
-        "import/no-extraneous-dependencies" : "off"
-
+        "import/no-extraneous-dependencies" : "off",
+        "import/extensions": "off",
+        "import/no-unresolved": "off"
     }
 }

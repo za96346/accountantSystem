@@ -8,9 +8,11 @@ import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import store from './vueX/store';
 
 createApp(App)
     .use(VueSidebarMenu)
     .use(Antd)
     .use(router)
+    .use(store)
     .mount('#app');
