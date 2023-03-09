@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const donationTransRouter = require("./donationTrans");
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+class indexRouter {
+    constructor(app) {
+        new donationTransRouter(app)
+    }
+}
 
-module.exports = router;
+module.exports = (app) => new indexRouter(app);
