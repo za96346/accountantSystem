@@ -2,36 +2,28 @@
     <div class="searchBar">
         <SearchBar />
     </div>
-    <a-table :dataSource="dataSource" :columns="columns" />
+    <a-table :dataSource="donationTrans" :columns="columns" />
 </template>
 
-<script>
-import { reactive } from 'vue';
+<script lang="js">
+// import { reactive } from 'vue';
+import { mapState } from 'vuex';
 import SearchBar from './component/SearchBar.vue';
+import { indexColumns } from './method/columns';
 
-const setup = () => {
-    const formState = reactive({
-        username: '',
-        password: '',
-        remember: true,
-    });
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
+const computed = mapState([
+    'isLoading',
+    'donationTrans',
+]);
 
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
-    return {
-        formState,
-        onFinish,
-        onFinishFailed,
-    };
-};
+const setup = () => ({
+    columns: indexColumns,
+});
 export default {
     name: 'DonationTransPage',
     setup,
     components: { SearchBar },
+    computed,
 };
 </script>
 

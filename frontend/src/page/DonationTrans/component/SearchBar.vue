@@ -3,14 +3,13 @@
         :model="formState"
         name="basic"
         autocomplete="off"
-        @finish="onFinish"
-        @finishFailed="onFinishFailed"
+        @finish="getDonationTrans"
     >
         <a-form-item
             label="商店訂單編號"
             name="productNum"
         >
-            <a-input v-model:value="formState.username" />
+            <a-input v-model:value="formState.productNum" />
         </a-form-item>
         <a-form-item :wrapper-col="{ offset: 20, span: 16 }">
             <a-button type="primary" html-type="submit">搜尋</a-button>
@@ -19,42 +18,35 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
-import { mapGetters } from 'vuex';
-import store from '@/vueX/store';
+import {
+    onMounted, onUpdated, onUnmounted, reactive,
+} from 'vue';
+import { mapActions } from 'vuex';
 
-const computed = {
-    ...mapGetters([
-        'isLoading',
-        'donationTrans',
-    ]),
-};
-
-const setup = () => {
+const setup = (props) => {
     const formState = reactive({
-        username: '',
-        password: '',
-        remember: true,
+        productNum: '',
     });
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
-    const onFinish = (values) => {
-        store.commit('setDonationTrans', values);
-        console.log('Success:', computed.donationTrans);
-    };
-
+    onMounted(() => { // 使用的方式改為函數式的方式來使用
+        console.log('mounted!');
+    });
+    onUpdated(() => {
+        console.log('updated!');
+    });
+    onUnmounted(() => {
+        console.log('unmounted!');
+    });
     return {
         formState,
-        onFinish,
-        onFinishFailed,
     };
 };
 
 export default {
     name: 'SearchBar',
     setup,
-    computed,
+    methods: {
+        ...mapActions(['getDonationTrans'])
+    }
     // props: {
     //     msg: String,
     //     text: String,

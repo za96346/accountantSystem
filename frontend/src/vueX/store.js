@@ -1,30 +1,33 @@
 /* eslint-disable no-param-reassign */
 import { createStore } from 'vuex';
+import api from '@/method/api';
 
 // 定義一個新的 Vue Store
 const store = createStore({
     state: {
         isLoading: false,
         donationTrans: [],
+        user: {
+            token: '',
+        },
     },
     mutations: {
         // 將state設定為參數
         Loaded(state) {
             state.getters.isLoading = !state.getters.isLoading;
         },
-        setDonationTrans(state, payload) {
-            state.getters.donationTrans = payload;
+        updateDonationTrans(state, payload) {
+            state.donationTrans = payload;
+        },
+    },
+    actions: {
+        getDonationTrans: async (context, status) => {
+            const res = await api.getDonationTrans({});
+            context.commit('updateDonationTrans', res.data);
         },
     },
     getters: {
-
-    },
-    actions: {
-        addToFavorites(context, payload) {
-            const { donationTrans } = context.state;
-            favorites.push(payload);
-            context.commit('UPDATE_FAVORITES', favorites);
-        },
+        user: () => {},
     },
 });
 export default store;
