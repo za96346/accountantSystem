@@ -5,6 +5,7 @@ class databaseAbs {
     mysql;
     table = '';
     sequelize;
+    #_notRequiredToQuery
     constructor() {
         const database = process.env.DATA_BASE_NAME;
         const userName = process.env.DATA_BASE_USER;
@@ -18,6 +19,25 @@ class databaseAbs {
             port: port,
         });
         this.sequelize = Sequelize;
+
+        // 需要把它過濾的
+        this.#_notRequiredToQuery = [
+            'token'
+        ]
+    }
+
+    // 過濾 空的
+    filterEmpty(data = {}) {
+        return Object.keys(data)
+            .filter((key) =>
+                data[key] !== null
+                && data[key] !== ''
+                && !this.#_notRequiredToQuery.includes(key) // 不在 需要過濾 key 裏面
+            )
+            .reduce((accr, key) => {
+                accr[key] = data[key]
+                return accr
+            }, {})
     }
 }
 

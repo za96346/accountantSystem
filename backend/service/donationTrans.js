@@ -7,14 +7,70 @@ class donationTransService extends serviceAbs {
     }
 
     getDonationTrans() {
-        return (req, res, next) => {
-            this.DB.donationTrans.getRangeData()
-            return res.send({
-                status: 200,
-                message: "登入成功!",
-                data: [{ name: 'hi', key: '0' }],
-                token: 'efefef'
-            });
+        return async (req, res, next) => {
+            try {
+                console.log(req.query)
+                const data = await this.DB.donationTrans.getRangeData({
+                    where: req.query
+                })
+                return res.json({
+                    message: this.statusText.fetchSuccess,
+                    data,
+                });
+            } catch {
+                res.statusCode = 400
+                return res.json({
+                    message: this.statusText.fetchFail,
+                });
+            }
+        }
+    }
+    updateDonationTrans() {
+        return async (req, res, next) => {
+            try {
+                const data = await this.DB.donationTrans.updateData({
+                    data: req.body,
+                })
+                console.log(data);
+                return res.json({
+                    message: this.statusText.updateSuccess,
+                });
+            } catch {
+                res.statusCode = 400
+                return res.json({
+                    message: this.statusText.updateFail,
+                });
+            }
+        }
+    }
+    createDonationTrans() {
+        return async (req, res, next) => {
+            try {
+                const data = await this.DB.donationTrans.createData({})
+                return res.json({
+                    message: this.statusText.createSuccess,
+                });
+            } catch {
+                res.statusCode = 400
+                return res.json({
+                    message: this.statusText.createFail,
+                });
+            }
+        }
+    }
+    deleteDonationTrans() {
+        return async (req, res, next) => {
+            try {
+                const data = await this.DB.donationTrans.deleteData({})
+                return res.json({
+                    message: this.statusText.deleteSuccess
+                });
+            } catch {
+                res.statusCode = 400
+                return res.json({
+                    message: this.statusText.deleteFail,
+                });
+            }
         }
     }
 }

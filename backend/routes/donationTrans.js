@@ -17,6 +17,9 @@ class donationTransRouter extends routeAbs {
     }
     _routers(route) {
         route.get('/data', this.service.getDonationTrans())
+        route.post('/data', this.service.updateDonationTrans())
+        route.put('/data', this.service.createDonationTrans())
+        route.delete('/data', this.service.deleteDonationTrans())
     }
 }
 

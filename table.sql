@@ -20,8 +20,7 @@ create table log(
 # 蘭新金流上傳
 # W, M, Y, D
 create table donationTransaction(
-	orderSid varchar(20) unique not null,
-	companyId bigInt not null,
+	id varchar(20) unique not null,
 	amount int(6) default 0 not null,
 	cycle varchar(1) not null,
 	cyclePeriod varchar(4) not null,
@@ -41,6 +40,8 @@ create table donationTransaction(
 	recipientEmail varchar(100),
 	notifyUrl varchar(100),
 	lastUserEdit varchar(10),
-	createTime timestamp default now(),
-	lastModify timestamp default now()
+	createdAt timestamp default now(),
+	updatedAt timestamp default now()
 );
+
+alter table donationTransaction add primary key (id);

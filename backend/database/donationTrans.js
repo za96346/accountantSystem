@@ -1,27 +1,5 @@
 const databaseAbs = require('./databaseAbs');
 
-
-// orderSid varchar(20) unique not null
-// amount int(6) default 0 not null
-// cycle varchar(1) not null
-
-// cyclePeriod varchar(4) not null
-// authPeriod varchar(2) not null
-// creditNumber varchar(16) not null
-// creditMaturity varchar(5) not null
-// productName varchar(100) not null
-// consumerName varchar(30)
-// consumerTel varchar(20)
-// consumerAddr varchar(200)
-// consumerEmail varchar(100) not null
-// consumerInvoiceTitle varchar(200)
-// consumerInvoiceNumver int(8)
-// recipientName varchar(200)
-// recipientTel varchar(20)
-// recipientAddr varchar(200)
-// recipientEmail varchar(100)
-// notifyUrl varchar(100)
-
 class donationTrans extends databaseAbs {
     fullStruct;
     constructor() {
@@ -30,12 +8,13 @@ class donationTrans extends databaseAbs {
         // 定義一個叫做 User 的資料結構
         this.fullStruct = this.mysql.define(this.table, {
             // 定義 Model 屬性
-            orderSid: {   // 欄位名稱
+            id: {   // 欄位名稱
                 type: this.sequelize.STRING,  //  資料型態
-                allowNull: false // 能不能為空，預設是 true
+                allowNull: false, // 能不能為空，預設是 true
+                primaryKey: true,
             },
             amount: {
-                type: this.sequelize.STRING,
+                type: this.sequelize.INTEGER,
                 allowNull: false,
             },
             cycle: {
@@ -64,19 +43,87 @@ class donationTrans extends databaseAbs {
             },
             consumerName: {
                 type: this.sequelize.STRING,
+            },
+            consumerTel: {
+                type: this.sequelize.STRING,
+            },
+            consumerAddr: {
+                type: this.sequelize.STRING,
+            },
+            consumerEmail: {
+                type: this.sequelize.STRING,
+                allowNull: false,
+            },
+            consumerInvoiceTitle: {
+                type: this.sequelize.STRING,
+            },
+            consumerInvoiceNumber: {
+                type: this.sequelize.INTEGER,
+            },
+            recipientName: {
+                type: this.sequelize.STRING,
+            },
+            recipientTel: {
+                type: this.sequelize.STRING,
+            },
+            recipientAddr: {
+                type: this.sequelize.STRING,
+            },
+            recipientEmail: {
+                type: this.sequelize.STRING,
+            },
+            notifyUrl: {
+                type: this.sequelize.STRING,
+            },
+            lastUserEdit: {
+                type: this.sequelize.STRING,
             }
         }, {
+            tableName: this.table,
             // Other model options go here
         });
     }
 
-    getRangeData() {
-        this.mysql.sync().then(() => {
-            this.fullStruct.findAll().then((v) => {
-                console.log('\n\n')
-                console.log(JSON.stringify(v))
-            })
+    // 獲取範圍資料
+    async getRangeData({
+        where = {}
+    }) {
+        const res = await this.fullStruct.findAll({
+            where: this.filterEmpty(where),
+        });
+        return res;
+    }
+
+    // 更新資料
+    async updateData({
+        data = {},
+    }) {
+        const res = await this.fullStruct.update(data, {
+            where: {
+                id: data?.id,
+                returning: true,
+                plain: true
+            },
+            returning: true,
+            plain: true
         })
+        console.log(res)
+    }
+
+    // 新增資料
+    async createData({
+        data = {},
+    }) {
+        const res = await this.fullStruct.create(data)
+        console.log(res)
+    }
+
+    // 刪除 資料
+    async deleteData({
+        data = {},
+    }) {
+        const res = await this.fullStruct.create(data)
+        console.log(res)
     }
 }
 module.exports = donationTrans;
