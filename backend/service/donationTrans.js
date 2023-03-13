@@ -28,10 +28,9 @@ class donationTransService extends serviceAbs {
     updateDonationTrans() {
         return async (req, res, next) => {
             try {
-                const data = await this.DB.donationTrans.updateData({
+                await this.DB.donationTrans.updateData({
                     data: req.body,
                 })
-                console.log(data);
                 return res.json({
                     message: this.statusText.updateSuccess,
                 });
@@ -46,7 +45,9 @@ class donationTransService extends serviceAbs {
     createDonationTrans() {
         return async (req, res, next) => {
             try {
-                const data = await this.DB.donationTrans.createData({})
+                await this.DB.donationTrans.createData({
+                    data: req.body,
+                })
                 return res.json({
                     message: this.statusText.createSuccess,
                 });
@@ -61,7 +62,9 @@ class donationTransService extends serviceAbs {
     deleteDonationTrans() {
         return async (req, res, next) => {
             try {
-                const data = await this.DB.donationTrans.deleteData({})
+                const data = await this.DB.donationTrans.deleteData({
+                    data: req.query
+                })
                 return res.json({
                     message: this.statusText.deleteSuccess
                 });

@@ -1,29 +1,53 @@
 <template>
+    <ModalEdit :open="open" :onClose="onClose" />
     <div class="searchBar">
+        <a-Button @click="onOpen">
+            新增
+        </a-Button>
+        <a-divider />
         <SearchBar />
     </div>
     <a-table :dataSource="donationTrans" :columns="columns" />
 </template>
 
 <script lang="js">
-// import { reactive } from 'vue';
+import { reactive, toRefs } from 'vue';
 import { mapState } from 'vuex';
 import SearchBar from './component/SearchBar.vue';
 import { indexColumns } from './method/columns';
+import ModalEdit from './component/ModalEdit.vue';
 
-const computed = mapState([
-    'isLoading',
-    'donationTrans',
-]);
-
-const setup = () => ({
-    columns: indexColumns,
-});
 export default {
     name: 'DonationTransPage',
-    setup,
-    components: { SearchBar },
-    computed,
+    setup: () => {
+        const state = reactive({
+            open: false
+        })
+        return {
+            columns: indexColumns,
+            onOpen: () => {
+                Object.assign(state, {
+                    open: true
+                })
+            },
+            onClose: () => {
+                Object.assign(state, {
+                    open: false
+                })
+            },
+            onSave: () => {
+                
+            },
+            ...toRefs(state),
+        }
+    },
+    components: { SearchBar, ModalEdit },
+    computed: {
+        ...mapState([
+            'isLoading',
+            'donationTrans',
+        ]),
+    },
 };
 </script>
 
@@ -35,5 +59,8 @@ export default {
     border-radius: 10px;
     background-color: white;
     margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 </style>

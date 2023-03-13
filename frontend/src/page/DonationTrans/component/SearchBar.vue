@@ -2,14 +2,31 @@
     <a-form
         :model="formState"
         name="basic"
+        class="row w-100"
         autocomplete="off"
+
         @finish="getDonationTrans"
     >
         <a-form-item
-            label="商店訂單編號"
-            name="productNum"
+            class="col-lg-4 col-md-6"
+            label="訂單編號"
+            name="id"
         >
-            <a-input v-model:value="formState.productNum" />
+            <a-input v-model:value="formState.id" />
+        </a-form-item>
+        <a-form-item
+            class="col-lg-4 col-md-6"
+            label="商品名稱"
+            name="productName"
+        >
+            <a-input v-model:value="formState.productName" />
+        </a-form-item>
+        <a-form-item
+            class="col-lg-4 col-md-6"
+            label="付款人姓名"
+            name="consumerName"
+        >
+            <a-input v-model:value="formState.consumerName" />
         </a-form-item>
         <a-form-item :wrapper-col="{ offset: 20, span: 16 }">
             <a-button type="primary" html-type="submit">搜尋</a-button>
@@ -23,9 +40,13 @@ import {
 } from 'vue';
 import { mapActions } from 'vuex';
 
-const setup = (props) => {
+const methods = mapActions(['getDonationTrans']);
+
+const setup = () => {
     const formState = reactive({
-        productNum: '',
+        id: '',
+        consumerName: '',
+        productName: '',
     });
     onMounted(() => { // 使用的方式改為函數式的方式來使用
         console.log('mounted!');
@@ -44,9 +65,7 @@ const setup = (props) => {
 export default {
     name: 'SearchBar',
     setup,
-    methods: {
-        ...mapActions(['getDonationTrans'])
-    }
+    methods,
     // props: {
     //     msg: String,
     //     text: String,
@@ -55,4 +74,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+
 </style>
+

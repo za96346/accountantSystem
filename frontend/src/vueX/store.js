@@ -21,10 +21,14 @@ const store = createStore({
         },
     },
     actions: {
+        // donationTrans
         getDonationTrans: async (context, status) => {
-            const res = await api.getDonationTrans({});
+            const res = await api.getDonationTrans(status);
             context.commit('updateDonationTrans', res.data);
         },
+        createDonationTrans: async (context, status) => {
+            const res = await api.createDonationTrans(status);
+        }, 
     },
     getters: {
         user: () => {},

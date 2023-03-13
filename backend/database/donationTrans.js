@@ -101,13 +101,11 @@ class donationTrans extends databaseAbs {
         const res = await this.fullStruct.update(data, {
             where: {
                 id: data?.id,
-                returning: true,
-                plain: true
             },
             returning: true,
             plain: true
         })
-        console.log(res)
+        return res
     }
 
     // 新增資料
@@ -115,15 +113,19 @@ class donationTrans extends databaseAbs {
         data = {},
     }) {
         const res = await this.fullStruct.create(data)
-        console.log(res)
+        return res
     }
 
     // 刪除 資料
     async deleteData({
         data = {},
     }) {
-        const res = await this.fullStruct.create(data)
-        console.log(res)
+        const res = await this.fullStruct.destroy({
+            where: {
+                id: data?.id
+            }
+        })
+        return res
     }
 }
 module.exports = donationTrans;

@@ -148,8 +148,27 @@ class ApiControl {
         }
     }
 
+    // 扣款管理
     async getDonationTrans (data) {
         return this.GET({
+            url: this.route.donationTrans,
+            params: data
+        })
+    }
+    async updateDonationTrans (data) {
+        return this.POST({
+            url: this.route.donationTrans,
+            body: data
+        })
+    }
+    async createDonationTrans (data) {
+        return this.PUT({
+            url: this.route.donationTrans,
+            body: data
+        })
+    }
+    async deleteDonationTrans (data) {
+        return this.DELETE({
             url: this.route.donationTrans,
             params: data
         })
