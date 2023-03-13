@@ -3,7 +3,7 @@
         <a-modal v-model:visible="open" width="1000px" title="Basic Modal" @ok="a => createDonationTrans(formState)">
             <a-form
                 :model="formState"
-                name="basic"
+                name="扣款編輯"
                 class="row w-100"
                 autocomplete="off"
                 @finish="createDonationTrans"
@@ -15,7 +15,11 @@
                     <a-input v-model:value="formState.amount" />
                 </a-form-item>
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" label="週期" name="cycle">
-                    <a-input v-model:value="formState.cycle" />
+                    <a-select
+                        ref="select"
+                        :options="cycleOption"
+                        @change="handleChange"
+                    />
                 </a-form-item>
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" label="週期授權期間" name="cyclePeriod">
                     <a-input v-model:value="formState.cyclePeriod" />
@@ -70,7 +74,7 @@
 </template>
 <script lang="js">
 import { defineComponent, reactive, watchEffect, toRefs } from 'vue';
-import { donationTransValue } from '@/static';
+import { donationTransValue, cycleOption } from '@/static';
 import { mapActions } from 'vuex';
 
 export default defineComponent({
@@ -93,7 +97,8 @@ export default defineComponent({
         return {
             handleOk,
             ...toRefs(state),
-            formState
+            formState,
+            cycleOption
         };
     },
     methods: {
@@ -102,4 +107,3 @@ export default defineComponent({
     }
 });
 </script>
-

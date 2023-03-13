@@ -20,3 +20,22 @@ export const donationTransValue = {
     notifyUrl: '',
     lastUserEdit: '',
 };
+
+export const cycleOption = [
+    {
+        value: 'W',
+        label: '每週',
+    },
+    {
+        value: 'M',
+        label: '每月',
+    },
+    {
+        value: 'Y',
+        label: '每年',
+    },
+    {
+        value: 'D',
+        label: '固定天期制',
+    },
+];
