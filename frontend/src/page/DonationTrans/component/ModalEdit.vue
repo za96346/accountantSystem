@@ -1,12 +1,11 @@
 <template>
     <div>
-        <a-modal v-model:visible="open" width="1000px" title="Basic Modal" @ok="a => createDonationTrans(formState)">
+        <a-modal v-model:visible="state.open" width="1000px" title="Basic Modal" @ok="handleOk">
             <a-form
                 :model="formState"
                 name="扣款編輯"
                 class="row w-100"
                 autocomplete="off"
-                @finish="createDonationTrans"
             >
                 <a-form-item :required="true" class="col-lg-4 col-md-6" label="訂單編號" name="id">
                     <a-input v-model:value="formState.id" />
@@ -18,11 +17,31 @@
                     <a-select
                         ref="select"
                         :options="cycleOption"
+                        v-model:value="formState.cycle"
                         @change="handleChange"
                     />
                 </a-form-item>
-                <a-form-item :required="true"  class="col-lg-4 col-md-6" label="週期授權期間" name="cyclePeriod">
-                    <a-input v-model:value="formState.cyclePeriod" />
+                <a-form-item v-if="formState.cycle === 'Y'" :required="true"  class="col-lg-4 col-md-6" label="週期授權期間(月份)" name="cyclePeriodMonth">
+                    <a-select
+                        ref="select"
+                        :options="cyclePeriodMonthOption"
+                        v-model:value="formState.cyclePeriodMonth"
+                    />
+                </a-form-item>
+                <a-form-item v-if="formState.cycle === 'Y'" :required="true"  class="col-lg-4 col-md-6" label="週期授權期間(日期)" name="cyclePeriodDay">
+                    <a-select
+                        ref="select"
+                        :options="cyclePeriodDayOption(formState.cyclePeriodMonth)"
+                        v-model:value="formState.cyclePeriodDay"
+                    />
+                </a-form-item>
+                <!-- 週期授權期間 -->
+                <a-form-item v-if="formState.cycle !== 'Y'" :required="true"  class="col-lg-4 col-md-6" label="週期授權期間" name="cyclePeriod">
+                    <a-select
+                        ref="select"
+                        :options="cyclePeriodOption[formState.cycle]"
+                        v-model:value="formState.cyclePeriod"
+                    />
                 </a-form-item>
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" label="授權期數" name="authPeriod">
                     <a-input v-model:value="formState.authPeriod" />
@@ -73,37 +92,45 @@
     </div>
 </template>
 <script lang="js">
-import { defineComponent, reactive, watchEffect, toRefs } from 'vue';
-import { donationTransValue, cycleOption } from '@/static';
+import { defineComponent, reactive, watchEffect, watch } from 'vue';
+import { donationTransValue, cycleOption, cyclePeriodOption, cyclePeriodMonthOption, cyclePeriodDayOption } from '@/static';
 import { mapActions } from 'vuex';
 
 export default defineComponent({
     name: 'ModalEdit',
-    props: ['open', 'onClose', 'onSave'],
+    props: ['open', 'onClose', 'onSave', 'donationValue'],
     setup(props) {
         const state = reactive({
             open: false,
-            onClose: () => {},
         })
-        const formState = reactive(donationTransValue)
+        const formState = reactive({ ...donationTransValue })
         const handleOk = (e) => {
-            console.log(e);
-            props.onClose();
-            props.onSave()
+            console.log(formState)
+            props.onSave(formState)
         };
         watchEffect(() => {
-            Object.assign(state, props)
+            Object.assign(state, {
+                open: props.open,
+                onClose: props.onClose
+            })
+            Object.assign(formState, props.donationValue)
         });
+        // watch(formState, (old, newd, one) => {
+        //     console.log(old.cyclePeriodMonth, newd.cyclePeriodMonth, one)
+        // })
         return {
             handleOk,
-            ...toRefs(state),
+            state,
+            cycleOption,
+            cyclePeriodOption,
             formState,
-            cycleOption
+            cyclePeriodMonthOption,
+            cyclePeriodDayOption,
         };
     },
     methods: {
         getDonationTrans: () => {},
         ...mapActions(['createDonationTrans']),
-    }
+    },
 });
 </script>

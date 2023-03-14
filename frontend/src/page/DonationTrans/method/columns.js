@@ -57,7 +57,7 @@ const indexColumns = [
     {
         dataIndex: 'action',
         key: 'action',
-        title: '',
+        title: '功能',
     },
 ];
 
