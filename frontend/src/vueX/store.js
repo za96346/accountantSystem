@@ -1,13 +1,12 @@
 /* eslint-disable no-param-reassign */
 import { createStore } from 'vuex';
-import api from '@/method/api';
-import { donationTransValue } from '@/static';
 
 // 定義一個新的 Vue Store
 const store = createStore({
     state: {
         isLoading: false,
         donationTrans: [],
+        donationSearchBar: {},
         user: {
             token: '',
         },
@@ -20,17 +19,14 @@ const store = createStore({
         updateDonationTrans(state, payload) {
             state.donationTrans = payload;
         },
+        setDonationSearchBar(state, payload) {
+            state.donationSearchBar = payload;
+        },
     },
     actions: {
-        // donationTrans
-        getDonationTrans: async (context, status) => {
-            const res = await api.getDonationTrans(status);
-            context.commit('updateDonationTrans', res.data);
+        setDonationSearchBar: (context, statue) => {
+            context.commit('setDonationSearchBar', statue);
         },
-        createDonationTrans: async (context, status) => {
-            console.log(status)
-            const res = await api.createDonationTrans(status);
-        }, 
     },
     getters: {
         user: () => {},

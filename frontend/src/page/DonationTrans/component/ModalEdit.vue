@@ -1,9 +1,9 @@
 <template>
     <div>
-        <a-modal v-model:visible="state.open" width="1000px" title="Basic Modal" @ok="handleOk">
+        <a-modal v-model:visible="open" width="1000px" title="扣款編輯" @cancel="handleCancel" @ok="handleOk">
             <a-form
                 :model="formState"
-                name="扣款編輯"
+                name="form"
                 class="row w-100"
                 autocomplete="off"
             >
@@ -21,6 +21,8 @@
                         @change="handleChange"
                     />
                 </a-form-item>
+                
+                <!-- 週期 是 年份 -->
                 <a-form-item v-if="formState.cycle === 'Y'" :required="true"  class="col-lg-4 col-md-6" label="週期授權期間(月份)" name="cyclePeriodMonth">
                     <a-select
                         ref="select"
@@ -35,7 +37,8 @@
                         v-model:value="formState.cyclePeriodDay"
                     />
                 </a-form-item>
-                <!-- 週期授權期間 -->
+
+                <!-- 週期 不是 年份 -->
                 <a-form-item v-if="formState.cycle !== 'Y'" :required="true"  class="col-lg-4 col-md-6" label="週期授權期間" name="cyclePeriod">
                     <a-select
                         ref="select"
@@ -43,49 +46,59 @@
                         v-model:value="formState.cyclePeriod"
                     />
                 </a-form-item>
-                <a-form-item :required="true"  class="col-lg-4 col-md-6" label="授權期數" name="authPeriod">
-                    <a-input v-model:value="formState.authPeriod" />
+
+
+                <a-form-item :required="true"  class="col-lg-4 col-md-6" :extra="[
+                    '0 表示總授權期數無限制',
+                    '\n',
+                    '若授權期數大於信用卡到期日，則系統自動以信用卡到期日為最 終期數。'
+                ]" label="授權期數" name="authPeriod">
+                    <a-input-number v-model:value="formState.authPeriod" :min="0" class="w-100" />
                 </a-form-item>
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" label="信用卡卡號" name="creditNumber">
-                    <a-input v-model:value="formState.creditNumber" />
+                    <a-input v-model:value="formState.creditNumber" maxlength='19' />
                 </a-form-item>
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" label="信用卡到期日" name="creditMaturity">
-                    <a-input v-model:value="formState.creditMaturity" />
+                    <a-input v-model:value="formState.creditMaturity" maxlength='5' />
                 </a-form-item>
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" label="商品名稱" name="productName">
-                    <a-input v-model:value="formState.productName" />
+                    <a-input v-model:value="formState.productName" maxlength='100' />
                 </a-form-item>
+
+                <!-- 付款人的資料 -->
                 <a-divider>付款人</a-divider>
                 <a-form-item class="col-lg-4 col-md-6" label="付款人姓名" name="consumerName">
-                    <a-input v-model:value="formState.consumerName" />
+                    <a-input v-model:value="formState.consumerName" maxlength='30' />
                 </a-form-item>
                 <a-form-item class="col-lg-4 col-md-6" label="付款人電話" name="consumerTel">
-                    <a-input v-model:value="formState.consumerTel" />
+                    <a-input v-model:value="formState.consumerTel" maxlength='20' />
                 </a-form-item>
                 <a-form-item class="col-lg-4 col-md-6" label="付款人地址" name="consumerAddr">
-                    <a-input v-model:value="formState.consumerAddr" />
+                    <a-input v-model:value="formState.consumerAddr" maxlength='200' />
                 </a-form-item>
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" label="付款人 Email" name="consumerEmail">
-                    <a-input v-model:value="formState.consumerEmail" />
+                    <a-input v-model:value="formState.consumerEmail" maxlength='100' />
                 </a-form-item>
                 <a-form-item class="col-lg-4 col-md-6" label="付款人發票抬頭" name="consumerInvoiceTitle">
-                    <a-input v-model:value="formState.consumerInvoiceTitle" />
+                    <a-input v-model:value="formState.consumerInvoiceTitle" maxlength='200' />
                 </a-form-item>
                 <a-form-item class="col-lg-4 col-md-6" label="付款人發票統編" name="consumerInvoiceNumver">
-                    <a-input v-model:value="formState.consumerInvoiceNumver" />
+                    <a-input-number v-model:value="formState.consumerInvoiceNumver" maxlength='8' class="w-100" />
                 </a-form-item>
+
+                <!-- 收件人的資料 -->
                 <a-divider>收件人</a-divider>
                 <a-form-item class="col-lg-4 col-md-6" label="收件人姓名" name="recipientName">
-                    <a-input v-model:value="formState.recipientName" />
+                    <a-input v-model:value="formState.recipientName" maxlength='200' />
                 </a-form-item>
                 <a-form-item class="col-lg-4 col-md-6" label="收件人電話" name="recipientTel">
-                    <a-input v-model:value="formState.recipientTel" />
+                    <a-input v-model:value="formState.recipientTel" maxlength='20' />
                 </a-form-item>
                 <a-form-item class="col-lg-4 col-md-6" label="收件人地址" name="recipientAddr">
-                    <a-input v-model:value="formState.recipientAddr" />
+                    <a-input v-model:value="formState.recipientAddr" maxlength='200' />
                 </a-form-item>
                 <a-form-item class="col-lg-4 col-md-6" label="收件人 Email" name="recipientEmail">
-                    <a-input v-model:value="formState.recipientEmail" />
+                    <a-input v-model:value="formState.recipientEmail" maxlength='100' />
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -100,27 +113,62 @@ export default defineComponent({
     name: 'ModalEdit',
     props: ['open', 'onClose', 'onSave', 'donationValue'],
     setup(props) {
-        const state = reactive({
-            open: false,
-        })
         const formState = reactive({ ...donationTransValue })
         const handleOk = (e) => {
-            console.log(formState)
-            props.onSave(formState)
-        };
-        watchEffect(() => {
-            Object.assign(state, {
-                open: props.open,
-                onClose: props.onClose
+            props.onSave({
+                ...formState,
+                creditNumber: formState.creditNumber.replaceAll(' ', ''),
+                creditMaturity: formState.creditMaturity.replaceAll(' ', '/')
             })
+        };
+        const handleCancel = () => {
+            props.onClose()
+        }
+        watchEffect(() => {
             Object.assign(formState, props.donationValue)
         });
-        // watch(formState, (old, newd, one) => {
-        //     console.log(old.cyclePeriodMonth, newd.cyclePeriodMonth, one)
-        // })
+
+        // 監聽當 週期改變成 每年時
+        watchEffect(() => {
+            if (formState.cycle === 'Y') {
+                Object.assign(formState, {
+                    cyclePeriod: `${formState?.cyclePeriodMonth || ''}${formState?.cyclePeriodDay || ''}`
+                })
+            }
+        });
+
+        // 監聽當 週期更改 變 清空 週期授權
+        watch(() => formState.cycle, () => {
+            Object.assign(formState, {
+                cyclePeriod: ''
+            })
+        })
+
+        // 監聽當 信用卡 改變時 加入 空白符
+        watch(() => formState.creditNumber, (v) => {
+            const value = v
+                .replace(/\s/g, '')
+                .replace(/(.{4})/g, '$1 ')
+                .replace(/(\s*$)/g,"");
+            Object.assign(formState, {
+                creditNumber: value
+            })
+        })
+
+        // 監聽當 信用卡 到期日 改變時 加入 slash
+        watch(() => formState.creditMaturity, (v) => {
+            const value = v
+                .replace('/', '')
+                .replace(/\s/g, '')
+                .replace(/(.{2})/g, '$1 ')
+                .replace(/(\s*$)/g,"");
+            Object.assign(formState, {
+                creditMaturity: value
+            })
+        })
         return {
             handleOk,
-            state,
+            handleCancel,
             cycleOption,
             cyclePeriodOption,
             formState,

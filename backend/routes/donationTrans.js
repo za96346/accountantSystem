@@ -20,6 +20,7 @@ class donationTransRouter extends routeAbs {
         route.post('/data', this.service.updateDonationTrans())
         route.put('/data', this.service.createDonationTrans())
         route.delete('/data', this.service.deleteDonationTrans())
+        route.get('/csv', this.service.getDonationTransCSV())
     }
 }
 

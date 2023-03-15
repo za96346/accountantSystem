@@ -36,11 +36,10 @@
 
 <script>
 import {
-    onMounted, onUpdated, onUnmounted, reactive,
+    reactive, watch, onMounted
 } from 'vue';
-import { mapActions } from 'vuex';
-
-const methods = mapActions(['getDonationTrans']);
+import api from '@/method/api';
+import store from '@/vueX/store';
 
 const setup = () => {
     const formState = reactive({
@@ -48,14 +47,9 @@ const setup = () => {
         consumerName: '',
         productName: '',
     });
-    onMounted(() => { // 使用的方式改為函數式的方式來使用
-        console.log('mounted!');
-    });
-    onUpdated(() => {
-        console.log('updated!');
-    });
-    onUnmounted(() => {
-        console.log('unmounted!');
+    onMounted(api.getDonationTrans)
+    watch(formState, (val) => {
+        store.dispatch('setDonationSearchBar', {...val}); // 儲存 收尋bar
     });
     return {
         formState,
@@ -65,15 +59,11 @@ const setup = () => {
 export default {
     name: 'SearchBar',
     setup,
-    methods,
-    // props: {
-    //     msg: String,
-    //     text: String,
-    // },
-
+    methods: {
+        getDonationTrans: api.getDonationTrans,
+    },
 };
 </script>
 <style lang="scss" scoped>
 
 </style>
-

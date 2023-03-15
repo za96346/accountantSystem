@@ -4,9 +4,14 @@
 
     <!-- searchBar -->
     <div class="searchBar">
-        <a-Button @click="onOpen">
-            新增
-        </a-Button>
+        <div class="">
+            <a-Button @click="onOpen">
+                新增
+            </a-Button>
+            <a-Button @click="onOpen">
+                匯出CSV
+            </a-Button>
+        </div>
         <a-divider />
         <SearchBar />
     </div>
@@ -36,7 +41,7 @@
 
 <script lang="js">
 import { reactive, toRefs } from 'vue';
-import { mapActions, mapState } from 'vuex';
+import { mapState } from 'vuex';
 import SearchBar from './component/SearchBar.vue';
 import { indexColumns } from './method/columns';
 import ModalEdit from './component/ModalEdit.vue';
@@ -51,28 +56,32 @@ export default {
             type: '',
             value: donationTransValue
         })
+        const onClose = () => {
+            Object.assign(state, {
+                open: false
+            })
+            api.getDonationTrans()
+        }
         return {
             columns: indexColumns,
-            onOpen: (v) => {
+            onOpen: () => {
                 Object.assign(state, {
                     open: true,
-                    type: v.key
+                    type: 'create',
+                    value: donationTransValue
                 })
             },
-            onClose: () => {
-                Object.assign(state, {
-                    open: false
-                })
-            },
+            onClose,
             onSave: async (v) => {
                 if (state.type === 'edit') {
-                    await api.updateDonationTrans(v)
+                    const res = await api.updateDonationTrans(v)
+                    if (res) onClose();
                 } else if (state.type === 'create') {
-                    await api.createDonationTrans(v)
+                    const res = await api.createDonationTrans(v)
+                    if (res) onClose();
                 }
             },
             handleMenuClick: (v, row) => {
-                // console.log(v, row)
                 Object.assign(state, {
                     open: true,
                     type: v.key,

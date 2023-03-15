@@ -76,6 +76,23 @@ class donationTransService extends serviceAbs {
             }
         }
     }
+    getDonationTransCSV() {
+        return async (req, res, next) => {
+            try {
+                return res.csv([
+                    {"a": 1, "b": 2, "c": 3},
+                    {"a": 4, "b": 5, "c": 6}
+                  ], true, {
+                    "Access-Control-Allow-Origin": "*"
+                  }, 500)
+            } catch {
+                res.statusCode = 400
+                return res.json({
+                    message: this.statusText.deleteFail,
+                });
+            }
+        }
+    }
 }
 
 module.exports = donationTransService;

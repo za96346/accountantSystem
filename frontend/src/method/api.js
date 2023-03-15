@@ -1,3 +1,4 @@
+import store from '@/vueX/store';
 import axios from 'axios'
 import FullMessage from './notice';
 
@@ -9,6 +10,10 @@ class ApiControl {
         this.route = {
             donationTrans: 'donationTrans/data',
         };
+        this.getDonationTrans = this.getDonationTrans.bind(this)
+        this.updateDonationTrans = this.updateDonationTrans.bind(this)
+        this.createDonationTrans = this.createDonationTrans.bind(this)
+        this.deleteDonationTrans = this.deleteDonationTrans.bind(this)
     }
 
     async GET ({
@@ -149,29 +154,37 @@ class ApiControl {
     }
 
     // 扣款管理
-    async getDonationTrans (data) {
-        return this.GET({
+    async getDonationTrans () {
+        const params = {...store.state.donationSearchBar}
+        const res = await this.GET({
             url: this.route.donationTrans,
-            params: data
+            params,
+            successShow: false
         })
+        if (res.status) {
+            store.commit('updateDonationTrans', res.data)
+        }
     }
     async updateDonationTrans (data) {
-        return this.POST({
+        const res = await this.POST({
             url: this.route.donationTrans,
             body: data
         })
+        return res.status
     }
     async createDonationTrans (data) {
-        return this.PUT({
+        const res = await this.PUT({
             url: this.route.donationTrans,
             body: data
         })
+        return res.status
     }
     async deleteDonationTrans (data) {
-        return this.DELETE({
+        const res = await this.DELETE({
             url: this.route.donationTrans,
             params: data
         })
+        return res.status
     }
 }
 export default new ApiControl()

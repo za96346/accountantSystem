@@ -48,9 +48,9 @@ export const cyclePeriodOption = {
     ],
     M: gernerateDay(30),
     Y: [],
-    D: new Array(365).fill('').map((item, index) => ({
-        value: `${index + 1}`,
-        label: `每隔 ${index + 1} 天`,
+    D: new Array(364).fill('').map((item, index) => ({
+        value: `${index + 2}`,
+        label: `每隔 ${index + 2} 天`,
     })),
 };
 
