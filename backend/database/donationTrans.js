@@ -89,7 +89,7 @@ class donationTrans extends databaseAbs {
         where = {}
     }) {
         const res = await this.fullStruct.findAll({
-            where: this.filterEmpty(where),
+            where: this.whereLike(this.filterEmpty(where)),
         });
         return res;
     }

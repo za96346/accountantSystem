@@ -39,6 +39,17 @@ class databaseAbs {
                 return accr
             }, {})
     }
+
+    // 加上like
+    whereLike(data = {}) {
+        return Object.keys(data)
+            .reduce((accr, key) => {
+                accr[key] = {
+                    [this.sequelize.Op.like]: '%' + data[key] + '%'
+                }
+                return accr
+            }, {}) 
+    }
 }
 
 module.exports = databaseAbs;

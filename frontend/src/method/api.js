@@ -9,11 +9,13 @@ class ApiControl {
         this.baseUrl = 'http://127.0.0.1:4500'
         this.route = {
             donationTrans: 'donationTrans/data',
+            dwnTrans: 'donationTrans/csv',
         };
         this.getDonationTrans = this.getDonationTrans.bind(this)
         this.updateDonationTrans = this.updateDonationTrans.bind(this)
         this.createDonationTrans = this.createDonationTrans.bind(this)
         this.deleteDonationTrans = this.deleteDonationTrans.bind(this)
+        this.downloadDonationTransCSV = this.downloadDonationTransCSV.bind(this)
     }
 
     async GET ({
@@ -185,6 +187,23 @@ class ApiControl {
             params: data
         })
         return res.status
+    }
+
+    // 下載 扣款管理
+    async downloadDonationTransCSV () {
+        const params = {...store.state.donationSearchBar}
+        const res = await this.GET({
+            url: this.route.dwnTrans,
+            params,
+        })
+
+        const blob = await res.data.blob()
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = 'customers.csv'
+        link.click()
+        setTimeout(() => URL.revokeObjectURL(link.href), 0)
+        return res
     }
 }
 export default new ApiControl()

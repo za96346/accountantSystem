@@ -8,7 +8,7 @@
             <a-Button @click="onOpen">
                 新增
             </a-Button>
-            <a-Button @click="onOpen">
+            <a-Button @click="download">
                 匯出CSV
             </a-Button>
         </div>
@@ -88,6 +88,7 @@ export default {
                     value: { ...row }
                 })
             },
+            download: api.downloadDonationTransCSV,
             ...toRefs(state),
         }
     },

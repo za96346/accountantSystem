@@ -33,7 +33,7 @@ create table donationTransaction(
 	consumerAddr varchar(200),
 	consumerEmail varchar(100) not null,
 	consumerInvoiceTitle varchar(200),
-	consumerInvoiceNumver int(8),
+	consumerInvoiceNumber int(8),
 	recipientName varchar(200),
 	recipientTel varchar(20),
 	recipientAddr varchar(200),
