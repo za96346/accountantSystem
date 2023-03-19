@@ -28,21 +28,12 @@ class serviceAbs {
         const json2csv = new Parser.Parser({ fields });
         const csv = json2csv.parse(data);
 
-        fs.writeFile(`./csv/${fileName}.csv`, csv, (err) => {
-            console.log(err)
+        fs.writeFile(`./public/csv/${fileName}`, csv, () => {
+            res.download(`./public/csv/${fileName}`);
+            res.send({
+                data: process.env['DOWNLOAD_URL'] + 'csv/' + fileName
+            })
         })
-        fs.close()
-        setTimeout(() => {
-            fs.rm(`../csv/${fileName}`)
-        }, 3000)
-
-        return res.download(`../csv/${fileName}`);
-
-        // res.header('Content-Type', 'text/csv');
-        // res.attachment(fileName);
-        // return res.send({
-        //     url: process.env["DOWNLOAD_URL"] + fileName 
-        // });
     }
 }
 

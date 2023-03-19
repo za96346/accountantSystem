@@ -49,7 +49,7 @@ const setup = () => {
     });
     onMounted(api.getDonationTrans)
     watch(formState, (val) => {
-        store.dispatch('setDonationSearchBar', {...val}); // 儲存 收尋bar
+        store.dispatch('setDonationSearchBar', {...val}); // 儲存 收尋
     });
     return {
         formState,

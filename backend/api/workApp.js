@@ -1,31 +1,20 @@
-
+const axios = require('axios');
 
 class workApp {
     config;
+    url;
     constructor() {
-        this.config = {
-            uri: 'https://workapp.tw/workApp',
-            body: JSON.stringify(),
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        };
+        this.url =  process.env['REQUEST_SERVER_URL'];
         this.route = {
-            login: "/entry/login",
+            login: "entry/login",
         }
     }
 
-    post () {
-
-    }
-
-    login(body, callback) {
-        request(clientServerOptions, (error, response) => {
-            const data = JSON.parse(response.body)
-            console.log(data.data);
-            const a = jwt.verify(data.data, process.env["TOKEN_PASSWORD"])
-            console.log(a)
-        });
+    async login(body) {
+        console.log(body)
+        const res = await axios.post(this.url + this.route.login, body)
+        return res
     }
 }
+
+module.exports = new workApp();

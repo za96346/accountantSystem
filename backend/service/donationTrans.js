@@ -102,14 +102,14 @@ class donationTransService extends serviceAbs {
         return async (req, res, next) => {
             try {
                 const data = await this.DB.donationTrans.getRangeData({
-                    where: {}
+                    where: req.query
                 })
                 return this.downloadResource(res, this.#_csvField, data)
             } catch(e) {
                 console.log(e)
                 res.statusCode = 400
                 return res.json({
-                    message: this.statusText.deleteFail,
+                    message: this.statusText.dwnloadFail,
                 });
             }
         }

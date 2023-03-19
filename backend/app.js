@@ -33,10 +33,18 @@ app.use(cors({
 	"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
 	"preflightContinue": false,
 	"optionsSuccessStatus": 200
-  }));
+}));
 // app.use(expressJWT.expressjwt({
-//   secret: process.env["TOKEN_PASSWORD"],
-//   algorithms: ['HS256']
+//   secret: "aa20010722",
+//   algorithms: ['HS256'],
+//   getToken: (req) => {
+// 		console.log(req.query?.token)
+// 	  if (req.method === 'GET') {
+// 		return req.query?.token
+// 	  } else {
+// 		return req.headers?.token
+// 	  }
+//   }
 // }).unless({ path: [/^\/login\//] }));
 
 app.use(session({

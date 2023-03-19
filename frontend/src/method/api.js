@@ -197,9 +197,8 @@ class ApiControl {
             params,
         })
 
-        const blob = await res.data.blob()
         const link = document.createElement('a')
-        link.href = URL.createObjectURL(blob)
+        link.href = res.data
         link.download = 'customers.csv'
         link.click()
         setTimeout(() => URL.revokeObjectURL(link.href), 0)

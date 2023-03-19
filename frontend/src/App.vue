@@ -1,6 +1,7 @@
 <template>
     <div class="rootMain">
         <a-menu
+            v-if="router.currentRoute.value.fullPath !== '/login'"
             id="dddddd"
             v-model:openKeys="openKeys"
             v-model:selectedKeys="selectedKeys"
@@ -8,18 +9,25 @@
             mode="inline"
             @click="handleClick"
         >
-            <a-menu-item key="/donationTransManage" @titleClick="titleClick">
-                <MailOutlined />
-                    扣款管理
-            </a-menu-item>
             <a-menu-item key="/home" @titleClick="titleClick">
                 <MailOutlined />
                     首頁
             </a-menu-item>
+            <a-menu-item key="/donationTransManage" @titleClick="titleClick">
+                <MailOutlined />
+                    扣款管理
+            </a-menu-item>
+            <a-menu-item key="/login" @titleClick="titleClick">
+                <MailOutlined />
+                    登出
+            </a-menu-item>
         </a-menu>
-        <div class="article">
+        <div class="article" v-if="router.currentRoute.value.fullPath !== '/login'">
             <RouterView />
         </div>
+        <template v-else>
+            <RouterView />
+        </template>
     </div>
 </template>
 <script lang="js">
@@ -51,6 +59,7 @@ export default defineComponent({
             openKeys,
             handleClick,
             titleClick,
+            router,
         };
     },
 });
