@@ -5,7 +5,7 @@
             id="dddddd"
             v-model:openKeys="openKeys"
             v-model:selectedKeys="selectedKeys"
-            style="width: 256px"
+            style="min-width: 256px; max-width: 256px;"
             mode="inline"
             @click="handleClick"
         >

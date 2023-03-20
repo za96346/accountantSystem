@@ -34,19 +34,29 @@ app.use(cors({
 	"preflightContinue": false,
 	"optionsSuccessStatus": 200
 }));
-// app.use(expressJWT.expressjwt({
-//   secret: "aa20010722",
-//   algorithms: ['HS256'],
-//   getToken: (req) => {
-// 		console.log(req.query?.token)
-// 	  if (req.method === 'GET') {
-// 		return req.query?.token
-// 	  } else {
-// 		return req.headers?.token
-// 	  }
-//   }
-// }).unless({ path: [/^\/login\//] }));
 
+app.use(expressJWT.expressjwt({
+  secret: process.env['TOKEN_PASSWORD'],
+  algorithms: ['HS256'],
+  getToken: (req) => {
+		if (req.method === 'GET') {
+			return req.query?.token
+		} else {
+			return req.headers?.token
+		}
+  },
+  onExpired: async (req, err) => {
+	if (new Date() - err.inner.expiredAt < 5000) { return;}
+	throw "登入憑證過期 請重新登入";
+  },
+}).unless({ path: ['/entry/login'] }));
+app.use(function (err, req, res, next) {
+	if (err.name === "登入憑證過期 請重新登入") {
+	  res.status(401).send("invalid token...");
+	} else {
+	  next(err);
+	}
+});
 app.use(session({
 	secret: process.env["TOKEN_PASSWORD"],
 	resave: false, // 固定寫法
@@ -60,15 +70,15 @@ app.use((req, res, next) => {
 });
 
 // error handler
-// app.use((err, req, res, next) => {
-// 	// set locals, only providing error in development
-// 	res.locals.message = err.message;
-// 	res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use((err, req, res, next) => {
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-// 	// render the error page
-// 	res.status(err.status || 500);
-// 	res.render('error');
-// });
+	// render the error page
+	res.status(err.status || 500);
+	res.render('error');
+});
 
 
 

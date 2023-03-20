@@ -1,5 +1,6 @@
 const serviceAbs = require('./serviceAbs');
 const workAppAPi = require('../api/workApp');
+const jwt = require('jsonwebtoken');
 
 /* GET home page. */
 class entryService extends serviceAbs {
@@ -10,17 +11,21 @@ class entryService extends serviceAbs {
     login() {
         return async (req, res, next) => {
             try {
-                const data = await workAppAPi.login(req.body)
+                const token = await workAppAPi.login(req.body) // 拿取 token
+                const selfInfo = await workAppAPi.selfInfo(token) // 拿取 自己的資料
+
                 return res.status(200).json({
-                    message: this.statusText.fetchSuccess,
-                    data,
+                    token: jwt.sign({
+                            user: selfInfo,
+                            workAppToken: token,
+                            exp: Math.floor(Date.now() / 1000) + (60 * 15)
+                        },
+                        process.env['TOKEN_PASSWORD']
+                    ),
+                    selfInfo,
                 });
             } catch(e) {
-                // console.log(e)
-                return res.status(400).json({
-                    message: this.statusText.fetchFail,
-                    data: e
-                });
+                return res.status(400).json(e);
             }
         }
     }

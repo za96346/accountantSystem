@@ -10,6 +10,7 @@ class ApiControl {
         this.route = {
             donationTrans: 'donationTrans/data',
             dwnTrans: 'donationTrans/csv',
+            login: 'entry/login'
         };
         this.getDonationTrans = this.getDonationTrans.bind(this)
         this.updateDonationTrans = this.updateDonationTrans.bind(this)
@@ -202,6 +203,20 @@ class ApiControl {
         link.download = 'customers.csv'
         link.click()
         setTimeout(() => URL.revokeObjectURL(link.href), 0)
+        return res
+    }
+
+    // 登入
+    async login(data) {
+        const res = await this.POST({
+            url: this.route.login,
+            body: data
+        })
+        localStorage.setItem('token', res?.token)
+        if (res.status) {
+            store.commit('setUser', res.selfInfo)
+            location.href = "/donationTransManage"
+        }
         return res
     }
 }

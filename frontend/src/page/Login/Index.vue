@@ -29,6 +29,7 @@
 
 <script>
 import { reactive } from 'vue';
+import api from '@/method/api';
 
 const setup = () => {
     const formState = reactive({
@@ -38,7 +39,7 @@ const setup = () => {
     return {
         formState,
         login: (v) => {
-            console.log(v);
+            api.login(v);
         },
     };
 };

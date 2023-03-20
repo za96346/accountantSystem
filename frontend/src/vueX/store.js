@@ -22,10 +22,16 @@ const store = createStore({
         setDonationSearchBar(state, payload) {
             state.donationSearchBar = payload;
         },
+        setUser(state, payload) {
+            state.user = payload;
+        },
     },
     actions: {
         setDonationSearchBar: (context, statue) => {
             context.commit('setDonationSearchBar', statue);
+        },
+        setUser: (context, statue) => {
+            context.commit('setUser', statue);
         },
     },
     getters: {
