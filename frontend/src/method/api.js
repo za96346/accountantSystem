@@ -29,7 +29,7 @@ class ApiControl {
         try {
             const res = await axios.get(`${this.baseUrl}/${url}`, { params: { ...params, token } })
             if (successShow) {
-                void FullMessage.success(res.data.message)
+                FullMessage.success(res.data.message)
             }
             return {
                 ...res.data,
@@ -40,7 +40,7 @@ class ApiControl {
                 clearAll()
             }
             if (FailShow) {
-                void FullMessage.error(e.response.data.message)
+                FullMessage.error(e.response.data.message)
             }
             return {
                 ...e.response.data,
@@ -65,7 +65,7 @@ class ApiControl {
                 params: { ...params }
             })
             if (successShow) {
-                void FullMessage.success(res.data.message)
+                FullMessage.success(res.data.message)
             }
             return {
                 ...res.data,
@@ -76,7 +76,7 @@ class ApiControl {
                 clearAll()
             }
             if (FailShow) {
-                void FullMessage.error(e.response?.data?.message)
+                FullMessage.error(e.response?.data?.message)
             }
             return {
                 ...e.response?.data,
@@ -101,7 +101,7 @@ class ApiControl {
                 params: { ...params }
             })
             if (successShow) {
-                void FullMessage.success(res.data.message)
+                FullMessage.success(res.data.message)
             }
             return {
                 ...res.data,
@@ -112,7 +112,7 @@ class ApiControl {
                 clearAll()
             }
             if (FailShow) {
-                void FullMessage.error(e.response.data.message)
+                FullMessage.error(e.response.data.message)
             }
             return {
                 ...e.response.data,
@@ -136,7 +136,7 @@ class ApiControl {
                 params: { ...params }
             })
             if (successShow) {
-                void FullMessage.success(res.data.message)
+                FullMessage.success(res.data.message)
             }
             return {
                 ...res.data,
@@ -147,7 +147,7 @@ class ApiControl {
                 clearAll()
             }
             if (FailShow) {
-                void FullMessage.error(e.response.data.message)
+                FullMessage.error(e.response.data.message)
             }
             return {
                 ...e.response.data,
@@ -215,7 +215,7 @@ class ApiControl {
         localStorage.setItem('token', res?.token)
         if (res.status) {
             store.commit('setUser', res.selfInfo)
-            location.href = "/donationTransManage"
+            location.href = "/home"
         }
         return res
     }

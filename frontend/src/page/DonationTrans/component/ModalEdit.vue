@@ -1,13 +1,34 @@
 <template>
     <div>
-        <a-modal v-model:visible="open" width="1000px" title="扣款編輯" @cancel="handleCancel" @ok="handleOk">
+        <a-modal
+            :visible="open"
+            width="1000px"
+            title="扣款編輯"
+            @cancel="handleCancel"
+            @ok="handleOk"
+            okText="儲存"
+            cancelText="取消"
+        >
+            <!-- 描述區 -->
+            <template v-if="props.type === 'edit'">
+                <a-descriptions title="">
+                    <a-descriptions-item label="訂單編號">{{ formState?.id || '' }}</a-descriptions-item>
+                    <a-descriptions-item label="最後編輯人">{{ formState?.lastUserEdit || '' }}</a-descriptions-item>
+                    <a-descriptions-item label="通知位置">{{ formState?.notifyUrl }}</a-descriptions-item>
+                    <a-descriptions-item label="創建時間">{{ new Date(formState?.createdAt)?.toLocaleString() || '' }}</a-descriptions-item>
+                    <a-descriptions-item label="更新時間">{{ new Date(formState?.updatedAt)?.toLocaleString() || '' }}</a-descriptions-item>
+                </a-descriptions>
+                <a-divider />
+            </template>
+
+            <!-- 表單區 -->
             <a-form
                 :model="formState"
                 name="form"
                 class="row w-100"
                 autocomplete="off"
             >
-                <a-form-item :required="true" class="col-lg-4 col-md-6" label="訂單編號" name="id">
+                <a-form-item v-if="props.type === 'create'" :required="true" class="col-lg-4 col-md-6" label="訂單編號" name="id">
                     <a-input v-model:value="formState.id" />
                 </a-form-item>
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" label="委託金額" name="amount">
@@ -111,7 +132,7 @@ import { mapActions } from 'vuex';
 
 export default defineComponent({
     name: 'ModalEdit',
-    props: ['open', 'onClose', 'onSave', 'donationValue'],
+    props: ['open', 'onClose', 'onSave', 'donationValue', 'type'],
     setup(props) {
         const formState = reactive({ ...donationTransValue })
         const handleOk = (e) => {
@@ -124,6 +145,8 @@ export default defineComponent({
         const handleCancel = () => {
             props.onClose()
         }
+
+        // 掛載 props 初始直
         watchEffect(() => {
             Object.assign(formState, props.donationValue)
         });
@@ -174,6 +197,7 @@ export default defineComponent({
             formState,
             cyclePeriodMonthOption,
             cyclePeriodDayOption,
+            props
         };
     },
     methods: {
@@ -182,3 +206,5 @@ export default defineComponent({
     },
 });
 </script>
+
+

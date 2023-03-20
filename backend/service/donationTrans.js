@@ -31,7 +31,6 @@ class donationTransService extends serviceAbs {
     getDonationTrans() {
         return async (req, res, next) => {
             try {
-                console.log(req.query)
                 const data = await this.DB.donationTrans.getRangeData({
                     where: req.query
                 })
@@ -51,7 +50,11 @@ class donationTransService extends serviceAbs {
         return async (req, res, next) => {
             try {
                 await this.DB.donationTrans.updateData({
-                    data: req.body,
+                    data: {
+                        ...req.body,
+                        notifyUrl: '',
+                        lastUserEdit: req.User?.UserName
+                    },
                 })
                 return res.json({
                     message: this.statusText.updateSuccess,
@@ -68,7 +71,11 @@ class donationTransService extends serviceAbs {
         return async (req, res, next) => {
             try {
                 await this.DB.donationTrans.createData({
-                    data: req.body,
+                    data:  {
+                        ...req.body,
+                        notifyUrl: '',
+                        lastUserEdit: req.User?.UserName
+                    },
                 })
                 return res.json({
                     message: this.statusText.createSuccess,

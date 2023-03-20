@@ -7,14 +7,13 @@ require('dotenv').config();
 const session = require('express-session');
 const cors = require('cors');
 var logger = require('express-logger');
-const jwt = require('jsonwebtoken');
 const expressJWT = require('express-jwt');
-const request = require('request');
 require('express-group-routes');
 require('csv-express')
 
 // router
 const indexRouter = require('./routes/index');
+const workAppApi = require('./api/workApp');
 
 const app = express();
 
@@ -35,39 +34,53 @@ app.use(cors({
 	"optionsSuccessStatus": 200
 }));
 
+// 此伺服器的token parser
 app.use(expressJWT.expressjwt({
-  secret: process.env['TOKEN_PASSWORD'],
-  algorithms: ['HS256'],
-  getToken: (req) => {
+	secret: process.env['TOKEN_PASSWORD'],
+	algorithms: ['HS256'],
+	getToken: (req) => {
 		if (req.method === 'GET') {
 			return req.query?.token
 		} else {
 			return req.headers?.token
 		}
-  },
-  onExpired: async (req, err) => {
-	if (new Date() - err.inner.expiredAt < 5000) { return;}
-	throw "登入憑證過期 請重新登入";
-  },
+	},
+	isRevoked: async (req, token) => {
+		// console.log('token => ', token.payload)
+		req.User = {...token.payload}?.user || {}
+		req.WorkAppToken = {...token.payload}?.workAppToken || ''
+
+		// workapp token 驗證
+		const data = await workAppApi.checkToken(req.WorkAppToken);
+		// console.log("token workapp result => ", data);
+		return !data?.status
+	},
+	onExpired: async (req, err) => {
+		if (new Date() - err.inner.expiredAt < 5000) { return;}
+		throw "登入憑證過期 請重新登入";
+	},
 }).unless({ path: ['/entry/login'] }));
+
 app.use(function (err, req, res, next) {
 	if (err.name === "登入憑證過期 請重新登入") {
-	  res.status(401).send("invalid token...");
+	  	res.status(401).send({
+			message: "invalid token..."
+	  	});
 	} else {
-	  next(err);
+	  	next(err);
 	}
 });
-app.use(session({
-	secret: process.env["TOKEN_PASSWORD"],
-	resave: false, // 固定寫法
-	saveUninitialized: true, // 固定寫法
-}));
+// app.use(session({
+// 	secret: process.env["TOKEN_PASSWORD"],
+// 	resave: false, // 固定寫法
+// 	saveUninitialized: true, // 固定寫法
+// }));
 
 indexRouter(app)
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-	next(createError(404));
-});
+// app.use((req, res, next) => {
+// 	next(createError(404));
+// });
 
 // error handler
 app.use((err, req, res, next) => {

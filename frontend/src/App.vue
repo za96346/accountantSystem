@@ -5,8 +5,8 @@
             id="dddddd"
             v-model:openKeys="openKeys"
             v-model:selectedKeys="selectedKeys"
-            style="min-width: 256px; max-width: 256px;"
             mode="inline"
+            class="menu"
             @click="handleClick"
         >
             <a-menu-item key="/home" @titleClick="titleClick">
@@ -51,7 +51,10 @@ export default defineComponent({
             router.push({ path: e.key, replace: false });
         };
         const titleClick = (e) => {
-            console.log('titleClick', e);
+            // console.log('titleClick', e);
+            if (e.key === '/login') {
+                localStorage.removeItem('token');
+            }
             useRouter().push(e.key);
         };
         return {
@@ -75,18 +78,32 @@ export default defineComponent({
     background-color: #e1e6eb;
     width: 100vw;
     height: 100vh;
+    overflow-x: hidden;
     position: relative;
 }
 .rootMain {
     display: flex;
     width: inherit;
     height: inherit;
+    margin: 0px;
+    .menu{
+        background-color: white;
+        min-width: 256px;
+        max-width: 256px;
+
+    }
     .article {
         flex: 1;
         padding: 10px;
+        box-shadow: inset 5px 5px 10px #2c3e50;
         width: 100%;
-        height: fit-content;
+        max-width: 100%;
+
         min-height: 100%;
+        max-height: 100vh;
+
+        overflow-y: scroll;
+        scroll-behavior: smooth;
     }
 }
 </style>

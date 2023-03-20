@@ -1,15 +1,21 @@
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue';
+
+const style = {
+    height: '80px',
+};
 
 const FullMessage = {
-    success: (v) => message.success({
+    success: (v) => notification.success({
         key: 1,
-        content: v,
+        message: v,
         duration: 2,
+        style,
     }),
-    error: (v) => message.error({
+    error: (v) => notification.error({
         key: 1,
-        content: v,
+        message: v,
         duration: 2,
+        style,
     }),
 };
 export default FullMessage;

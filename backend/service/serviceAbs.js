@@ -20,6 +20,8 @@ class serviceAbs {
             deleteFail: "刪除失敗",
             dwnloadSuccess: '下載成功',
             dwnloadFail: '下載失敗',
+            loginSuccess: '登入成功',
+            loginFail: '登入失敗，請確認 帳號密碼是否輸入正確'
         }
     }
 
@@ -31,7 +33,8 @@ class serviceAbs {
         fs.writeFile(`./public/csv/${fileName}`, csv, () => {
             res.download(`./public/csv/${fileName}`);
             res.send({
-                data: process.env['DOWNLOAD_URL'] + 'csv/' + fileName
+                data: process.env['DOWNLOAD_URL'] + 'csv/' + fileName,
+                message: this.statusText.dwnloadSuccess,
             })
         })
     }

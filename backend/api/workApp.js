@@ -8,21 +8,61 @@ class workApp {
         this.route = {
             login: "entry/login",
             selfInfo: "user/my",
+            checkAccess: "entry/checkAccess",
         }
     }
 
+    // 登入
     async login(body) {
-        const res = await axios.post(this.url + this.route.login, body)
-        return res?.data?.data
+        try {
+            const res = await axios.post(this.url + this.route.login, {...body, IsAccountSystem: true})
+            return {
+                status: true,
+                data: res?.data?.data
+            }
+        } catch {
+            return {
+                status: false
+            }
+        }
     }
 
+    // 自己的資料
     async selfInfo(token) {
-        const res = await axios.get(this.url + this.route.selfInfo, {
-            params: {
-                token
+        try {
+            const res = await axios.get(this.url + this.route.selfInfo, {
+                params: {
+                    token
+                }
+            })
+            return {
+                status: true,
+                data: res?.data?.data[0]
             }
-        })
-        return res?.data?.data[0] || {}
+        } catch {
+            return {
+                status: false
+            }
+        }
+    }
+
+    // 驗證token
+    async checkToken(token) {
+        try {
+            const res = await axios.get(this.url + this.route.checkAccess, {
+                params: {
+                    token
+                }
+            })
+            return {
+                status: true,
+                data: res?.data || {}
+            }
+        } catch {
+            return {
+                status: false
+            }
+        }
     }
 }
 

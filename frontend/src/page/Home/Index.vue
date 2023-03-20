@@ -1,5 +1,5 @@
 <template>
-    <a-table :dataSource="dataSource" :columns="columns" />
+    home
 </template>
 
 <script>

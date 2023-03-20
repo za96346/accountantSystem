@@ -1,6 +1,6 @@
 <template>
     <!-- Modal -->
-    <ModalEdit :open="open" :onClose="onClose" :donationValue="value" :onSave="onSave" />
+    <ModalEdit :type="type" :open="open" :onClose="onClose" :donationValue="value" :onSave="onSave" />
 
     <!-- searchBar -->
     <div class="searchBar">
@@ -17,7 +17,16 @@
     </div>
 
     <!-- table -->
-    <a-table :dataSource="donationTrans" :columns="columns" >
+    <a-table
+        sticky
+        :scroll="{ x: 1500 }"
+        :dataSource="donationTrans"
+        :columns="columns"
+        :size="small"
+        :pagination="{
+            showSizeChanger: true
+        }"
+    >
         <template #bodyCell="{ column, record }">
             <template v-if="column.dataIndex === 'action'">
                 <span class="table-operation">
@@ -25,11 +34,11 @@
                         <template #overlay>
                             <a-menu @click="(v) => { handleMenuClick(v, record)}">
                                 <a-menu-item key="edit">編輯</a-menu-item>
-                                <a-menu-item key="edit">刪除</a-menu-item>
+                                <a-menu-item key="delete">刪除</a-menu-item>
                             </a-menu>
                         </template>
                         <a>
-                            More
+                            更多
                             <down-outlined />
                         </a>
                     </a-dropdown>
@@ -47,6 +56,7 @@ import { indexColumns } from './method/columns';
 import ModalEdit from './component/ModalEdit.vue';
 import { donationTransValue } from '@/static';
 import api from '@/method/api';
+import { Modal } from 'ant-design-vue';
 
 export default {
     name: 'DonationTransPage',
@@ -54,11 +64,13 @@ export default {
         const state = reactive({
             open: false,
             type: '',
-            value: donationTransValue
+            value: donationTransValue // 預設值
         })
         const onClose = () => {
             Object.assign(state, {
-                open: false
+                open: false,
+                type: '',
+                value: donationTransValue
             })
             api.getDonationTrans()
         }
@@ -82,11 +94,24 @@ export default {
                 }
             },
             handleMenuClick: (v, row) => {
-                Object.assign(state, {
-                    open: true,
-                    type: v.key,
-                    value: { ...row }
-                })
+                if (v.key === 'delete') {
+                    Modal.confirm({
+                        okText: "確認刪除",
+                        cancelText: '取消',
+                        content: `是否要刪除 訂單 ${row?.id}`,
+                        onOk: () => {
+                            api.deleteDonationTrans(row).then(() => {
+                                api.getDonationTrans()
+                            })
+                        }
+                    })
+                } else {
+                    Object.assign(state, {
+                        open: true,
+                        type: v.key,
+                        value: { ...row }
+                    })
+                }
             },
             download: api.downloadDonationTransCSV,
             ...toRefs(state),
@@ -115,7 +140,5 @@ export default {
     align-items: flex-start;
 }
 </style>
-
-
 
 
