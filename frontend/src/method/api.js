@@ -192,7 +192,14 @@ class ApiControl {
 
     // 下載 扣款管理
     async downloadDonationTransCSV () {
-        const params = {...store.state.donationSearchBar}
+        // 戴上 crypto key iv
+        const cryptKey = localStorage.getItem('cryptKey');
+        const cryptIV = localStorage.getItem('cryptIV');
+        const params = {
+            ...store.state.donationSearchBar,
+            cryptIV,
+            cryptKey,
+        }
         const res = await this.GET({
             url: this.route.dwnTrans,
             params,

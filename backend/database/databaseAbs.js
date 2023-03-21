@@ -22,7 +22,9 @@ class databaseAbs {
 
         // 需要把它過濾的
         this.#_notRequiredToQuery = [
-            'token'
+            'token',
+            'cryptIV',
+            'cryptKey'
         ]
     }
 

@@ -25,7 +25,7 @@ create table donationTransaction(
 	cycle varchar(1) not null,
 	cyclePeriod varchar(4) not null,
 	authPeriod varchar(2) not null,
-	creditNumber varchar(2000) not null,
+	creditNumber varchar(200) not null,
 	creditMaturity varchar(5) not null,
 	productName varchar(100) not null,
 	consumerName varchar(30),

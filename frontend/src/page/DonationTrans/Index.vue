@@ -49,7 +49,7 @@
 </template>
 
 <script lang="js">
-import { reactive, toRefs } from 'vue';
+import { reactive, toRefs, onUnmounted } from 'vue';
 import { mapState } from 'vuex';
 import SearchBar from './component/SearchBar.vue';
 import { indexColumns } from './method/columns';
@@ -57,6 +57,7 @@ import ModalEdit from './component/ModalEdit.vue';
 import { donationTransValue } from '@/static';
 import api from '@/method/api';
 import { Modal } from 'ant-design-vue';
+import store from '@/vueX/store';
 
 export default {
     name: 'DonationTransPage',
@@ -74,6 +75,9 @@ export default {
             })
             api.getDonationTrans()
         }
+        onUnmounted(() => {
+            store.dispatch('clearDonationTrans', [])
+        })
         return {
             columns: indexColumns,
             onOpen: () => {

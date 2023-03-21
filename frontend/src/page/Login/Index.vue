@@ -17,7 +17,7 @@
                     label="密碼"
                     name="password"
                 >
-                    <a-input v-model:value="formState.password" />
+                    <a-input-password v-model:value="formState.password" />
                 </a-form-item>
             </div>
             <a-form-item :wrapper-col="{ offset: 20, span: 16 }">

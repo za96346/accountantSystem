@@ -3,6 +3,8 @@ const serviceAbs = require('./serviceAbs');
 /* GET home page. */
 class donationTransService extends serviceAbs {
     #_csvField;
+    #_cryptKey;
+    #_cryptIV;
     constructor() {
         super();
         this.#_csvField = [
@@ -26,6 +28,8 @@ class donationTransService extends serviceAbs {
             { label: "收件人 Email", value: 'recipientEmail' },
             { label: "Notify URL", value: 'notifyUrl' },
         ]
+        this.#_cryptKey =  process.env["CRYPT_SCRECT"];
+        this.#_cryptIV =  process.env["CRYPT_IV"];
     }
 
     getDonationTrans() {
@@ -49,9 +53,11 @@ class donationTransService extends serviceAbs {
     updateDonationTrans() {
         return async (req, res, next) => {
             try {
+                const afterCrypt = this.encrypt(this.#_cryptKey, this.#_cryptIV, req.body?.creditNumber)
                 await this.DB.donationTrans.updateData({
                     data: {
                         ...req.body,
+                        creditNumber: afterCrypt,
                         notifyUrl: '',
                         lastUserEdit: req.User?.UserName
                     },
@@ -59,7 +65,8 @@ class donationTransService extends serviceAbs {
                 return res.json({
                     message: this.statusText.updateSuccess,
                 });
-            } catch {
+            } catch(e) {
+                console.log(e)
                 res.statusCode = 400
                 return res.json({
                     message: this.statusText.updateFail,
@@ -70,9 +77,11 @@ class donationTransService extends serviceAbs {
     createDonationTrans() {
         return async (req, res, next) => {
             try {
+                const afterCrypt = this.encrypt(this.#_cryptKey, this.#_cryptIV, req.body?.creditNumber)
                 await this.DB.donationTrans.createData({
                     data:  {
                         ...req.body,
+                        creditNumber: afterCrypt,
                         notifyUrl: '',
                         lastUserEdit: req.User?.UserName
                     },
@@ -111,12 +120,17 @@ class donationTransService extends serviceAbs {
                 const data = await this.DB.donationTrans.getRangeData({
                     where: req.query
                 })
-                return this.downloadResource(res, this.#_csvField, data)
+                const decryptData = JSON.parse(JSON.stringify(data))?.map((item) => ({
+                    ...item,
+                    creditNumber: this.decrypt(req.query?.cryptKey, req.query?.cryptIV, item?.creditNumber)
+                }))
+                console.log(decryptData)
+                return this.downloadResource(res, this.#_csvField, decryptData)
             } catch(e) {
                 console.log(e)
                 res.statusCode = 400
                 return res.json({
-                    message: this.statusText.dwnloadFail,
+                    message: this.statusText.dwnloadFail + '，請確認金鑰是否正確',
                 });
             }
         }

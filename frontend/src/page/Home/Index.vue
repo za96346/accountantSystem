@@ -1,47 +1,18 @@
 <template>
-    home
+    <a-tabs v-model:activeKey="activeKey">
+        <a-tab-pane key="1" tab="設定金鑰匙">
+            <EnterKey />
+        </a-tab-pane>
+    </a-tabs>
 </template>
 
 <script>
+import EnterKey from './component/EnterKey.vue';
+
 export default {
     name: 'HomePage',
-    setup: () => ({
-        dataSource: [
-            {
-                key: '1',
-                name: 'Mike',
-                age: 32,
-                address: '10 Downing Street',
-            },
-            {
-                key: '2',
-                name: 'John',
-                age: 42,
-                address: '10 Downing Street',
-            },
-        ],
-        columns: [
-            {
-                title: 'Name',
-                dataIndex: 'name',
-                key: 'name',
-            },
-            {
-                title: 'Age',
-                dataIndex: 'age',
-                key: 'age',
-            },
-            {
-                title: 'Address',
-                dataIndex: 'address',
-                key: 'address',
-            },
-        ],
-    }),
-    // props: {
-    //     msg: String,
-    //     text: String,
-    // },
+    setup: () => ({}),
+    components: { EnterKey },
 };
 </script>
 
