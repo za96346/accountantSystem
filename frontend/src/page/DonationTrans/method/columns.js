@@ -3,6 +3,7 @@ const indexColumns = [
         dataIndex: 'id',
         key: 'id',
         title: '訂單編號',
+        fixed: 'left',
     },
     {
         dataIndex: 'amount',
