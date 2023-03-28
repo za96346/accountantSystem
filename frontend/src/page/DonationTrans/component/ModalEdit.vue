@@ -12,11 +12,21 @@
             <!-- 描述區 -->
             <template v-if="props.type === 'edit'">
                 <a-descriptions title="">
-                    <a-descriptions-item label="訂單編號">{{ formState?.id || '' }}</a-descriptions-item>
-                    <a-descriptions-item label="最後編輯人">{{ formState?.lastUserEdit || '' }}</a-descriptions-item>
-                    <a-descriptions-item label="通知位置">{{ formState?.notifyUrl }}</a-descriptions-item>
-                    <a-descriptions-item label="創建時間">{{ new Date(formState?.createdAt)?.toLocaleString() || '' }}</a-descriptions-item>
-                    <a-descriptions-item label="更新時間">{{ new Date(formState?.updatedAt)?.toLocaleString() || '' }}</a-descriptions-item>
+                    <a-descriptions-item label="訂單編號">
+                        {{ formState?.id || '' }}
+                    </a-descriptions-item>
+                    <a-descriptions-item label="最後編輯人">
+                        {{ formState?.lastUserEdit || '' }}
+                    </a-descriptions-item>
+                    <a-descriptions-item label="通知位置">
+                        {{ formState?.notifyUrl }}
+                    </a-descriptions-item>
+                    <a-descriptions-item label="創建時間">
+                        {{ new Date(formState?.createdAt)?.toLocaleString() || '' }}
+                    </a-descriptions-item>
+                    <a-descriptions-item label="更新時間">
+                        {{ new Date(formState?.updatedAt)?.toLocaleString() || '' }}
+                    </a-descriptions-item>
                 </a-descriptions>
                 <a-divider />
             </template>
@@ -28,7 +38,13 @@
                 class="row w-100"
                 autocomplete="off"
             >
-                <a-form-item v-if="props.type === 'create'" :required="true" class="col-lg-4 col-md-6" label="訂單編號" name="id">
+                <a-form-item
+                    v-if="props.type === 'create'"
+                    :required="true"
+                    class="col-lg-4 col-md-6"
+                    label="訂單編號"
+                    name="id"
+                >
                     <a-input v-model:value="formState.id" />
                 </a-form-item>
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" label="委託金額" name="amount">
@@ -42,16 +58,27 @@
                         @change="handleChange"
                     />
                 </a-form-item>
-                
                 <!-- 週期 是 年份 -->
-                <a-form-item v-if="formState.cycle === 'Y'" :required="true"  class="col-lg-4 col-md-6" label="週期授權期間(月份)" name="cyclePeriodMonth">
+                <a-form-item
+                    v-if="formState.cycle === 'Y'"
+                    :required="true"
+                    class="col-lg-4 col-md-6"
+                    label="週期授權期間(月份)"
+                    name="cyclePeriodMonth"
+                >
                     <a-select
                         ref="select"
                         :options="cyclePeriodMonthOption"
                         v-model:value="formState.cyclePeriodMonth"
                     />
                 </a-form-item>
-                <a-form-item v-if="formState.cycle === 'Y'" :required="true"  class="col-lg-4 col-md-6" label="週期授權期間(日期)" name="cyclePeriodDay">
+                <a-form-item
+                    v-if="formState.cycle === 'Y'"
+                    :required="true"
+                    class="col-lg-4 col-md-6"
+                    label="週期授權期間(日期)"
+                    name="cyclePeriodDay"
+                >
                     <a-select
                         ref="select"
                         :options="cyclePeriodDayOption(formState.cyclePeriodMonth)"
@@ -60,14 +87,19 @@
                 </a-form-item>
 
                 <!-- 週期 不是 年份 -->
-                <a-form-item v-if="formState.cycle !== 'Y'" :required="true"  class="col-lg-4 col-md-6" label="週期授權期間" name="cyclePeriod">
+                <a-form-item
+                    v-if="formState.cycle !== 'Y'"
+                    :required="true"
+                    class="col-lg-4 col-md-6"
+                    label="週期授權期間"
+                    name="cyclePeriod"
+                >
                     <a-select
                         ref="select"
                         :options="cyclePeriodOption[formState.cycle]"
                         v-model:value="formState.cyclePeriod"
                     />
                 </a-form-item>
-
 
                 <a-form-item :required="true"  class="col-lg-4 col-md-6" :extra="[
                     '0 表示總授權期數無限制',
@@ -76,13 +108,28 @@
                 ]" label="授權期數" name="authPeriod">
                     <a-input-number v-model:value="formState.authPeriod" :min="0" class="w-100" />
                 </a-form-item>
-                <a-form-item :required="true"  class="col-lg-4 col-md-6" label="信用卡卡號" name="creditNumber">
+                <a-form-item
+                    :required="true"
+                    class="col-lg-4 col-md-6"
+                    label="信用卡卡號"
+                    name="creditNumber"
+                >
                     <a-input v-model:value="formState.creditNumber" maxlength='19' />
                 </a-form-item>
-                <a-form-item :required="true"  class="col-lg-4 col-md-6" label="信用卡到期日" name="creditMaturity">
+                <a-form-item
+                    :required="true"
+                    class="col-lg-4 col-md-6"
+                    label="信用卡到期日"
+                    name="creditMaturity"
+                >
                     <a-input v-model:value="formState.creditMaturity" maxlength='5' />
                 </a-form-item>
-                <a-form-item :required="true"  class="col-lg-4 col-md-6" label="商品名稱" name="productName">
+                <a-form-item
+                    :required="true"
+                    class="col-lg-4 col-md-6"
+                    label="商品名稱"
+                    name="productName"
+                >
                     <a-input v-model:value="formState.productName" maxlength='100' />
                 </a-form-item>
 
@@ -97,14 +144,23 @@
                 <a-form-item class="col-lg-4 col-md-6" label="付款人地址" name="consumerAddr">
                     <a-input v-model:value="formState.consumerAddr" maxlength='200' />
                 </a-form-item>
-                <a-form-item :required="true"  class="col-lg-4 col-md-6" label="付款人 Email" name="consumerEmail">
+                <a-form-item
+                    :required="true"
+                    class="col-lg-4 col-md-6"
+                    label="付款人 Email"
+                    name="consumerEmail"
+                >
                     <a-input v-model:value="formState.consumerEmail" maxlength='100' />
                 </a-form-item>
                 <a-form-item class="col-lg-4 col-md-6" label="付款人發票抬頭" name="consumerInvoiceTitle">
                     <a-input v-model:value="formState.consumerInvoiceTitle" maxlength='200' />
                 </a-form-item>
                 <a-form-item class="col-lg-4 col-md-6" label="付款人發票統編" name="consumerInvoiceNumver">
-                    <a-input-number v-model:value="formState.consumerInvoiceNumver" maxlength='8' class="w-100" />
+                    <a-input-number
+                        v-model:value="formState.consumerInvoiceNumver"
+                        maxlength='8'
+                        class="w-100"
+                    />
                 </a-form-item>
 
                 <!-- 收件人的資料 -->
@@ -126,57 +182,65 @@
     </div>
 </template>
 <script lang="js">
-import { defineComponent, reactive, watchEffect, watch } from 'vue';
-import { donationTransValue, cycleOption, cyclePeriodOption, cyclePeriodMonthOption, cyclePeriodDayOption } from '@/static';
+import {
+    defineComponent, reactive, watchEffect, watch,
+} from 'vue';
 import { mapActions } from 'vuex';
+import {
+    donationTransValue,
+    cycleOption,
+    cyclePeriodOption,
+    cyclePeriodMonthOption,
+    cyclePeriodDayOption,
+} from '@/static';
 
 export default defineComponent({
     name: 'ModalEdit',
     props: ['open', 'onClose', 'onSave', 'donationValue', 'type'],
     setup(props) {
-        const formState = reactive({ ...donationTransValue })
-        const handleOk = (e) => {
+        const formState = reactive({ ...donationTransValue });
+        const handleOk = () => {
             props.onSave({
                 ...formState,
                 creditNumber: formState.creditNumber.replaceAll(' ', ''),
-                creditMaturity: formState.creditMaturity.replaceAll(' ', '/')
-            })
+                creditMaturity: formState.creditMaturity.replaceAll(' ', '/'),
+            });
         };
         const handleCancel = () => {
-            props.onClose()
-        }
+            props.onClose();
+        };
 
         // 掛載 props 初始直
         watchEffect(() => {
-            Object.assign(formState, props.donationValue)
+            Object.assign(formState, props.donationValue);
         });
 
         // 監聽當 週期改變成 每年時
         watchEffect(() => {
             if (formState.cycle === 'Y') {
                 Object.assign(formState, {
-                    cyclePeriod: `${formState?.cyclePeriodMonth || ''}${formState?.cyclePeriodDay || ''}`
-                })
+                    cyclePeriod: `${formState?.cyclePeriodMonth || ''}${formState?.cyclePeriodDay || ''}`,
+                });
             }
         });
 
         // 監聽當 週期更改 變 清空 週期授權
         watch(() => formState.cycle, () => {
             Object.assign(formState, {
-                cyclePeriod: ''
-            })
-        })
+                cyclePeriod: '',
+            });
+        });
 
         // 監聽當 信用卡 改變時 加入 空白符
         watch(() => formState.creditNumber, (v) => {
             const value = v
                 .replace(/\s/g, '')
                 .replace(/(.{4})/g, '$1 ')
-                .replace(/(\s*$)/g,"");
+                .replace(/(\s*$)/g, '');
             Object.assign(formState, {
-                creditNumber: value
-            })
-        })
+                creditNumber: value,
+            });
+        });
 
         // 監聽當 信用卡 到期日 改變時 加入 slash
         watch(() => formState.creditMaturity, (v) => {
@@ -184,11 +248,11 @@ export default defineComponent({
                 .replace('/', '')
                 .replace(/\s/g, '')
                 .replace(/(.{2})/g, '$1 ')
-                .replace(/(\s*$)/g,"");
+                .replace(/(\s*$)/g, '');
             Object.assign(formState, {
-                creditMaturity: value
-            })
-        })
+                creditMaturity: value,
+            });
+        });
         return {
             handleOk,
             handleCancel,
@@ -197,7 +261,7 @@ export default defineComponent({
             formState,
             cyclePeriodMonthOption,
             cyclePeriodDayOption,
-            props
+            props,
         };
     },
     methods: {
@@ -206,5 +270,3 @@ export default defineComponent({
     },
 });
 </script>
-
-

@@ -36,7 +36,7 @@
 
 <script>
 import {
-    reactive, watch, onMounted
+    reactive, watch, onMounted,
 } from 'vue';
 import api from '@/method/api';
 import store from '@/vueX/store';
@@ -47,9 +47,9 @@ const setup = () => {
         consumerName: '',
         productName: '',
     });
-    onMounted(api.getDonationTrans)
+    onMounted(api.getDonationTrans);
     watch(formState, (val) => {
-        store.dispatch('setDonationSearchBar', {...val}); // 儲存 收尋
+        store.dispatch('setDonationSearchBar', { ...val }); // 儲存 收尋
     });
     return {
         formState,

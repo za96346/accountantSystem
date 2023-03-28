@@ -4,11 +4,20 @@ const indexService = require("../service/index");
 class routeAbs {
     service;
     app;
+    groupRoute;
     constructor({
         app,
         service
     }) {
         this.app = app;
+        if (process.env['NODE_ENV'] === 'production') {
+            // app.set('base', '/accountantSystemApi')
+            // console.log('base => ', '/accountantSystemApi')
+            // this.app.use('/accountantSystemApi')
+            this.groupRoute = `/accountantSystemApi/${service}`
+        } else {
+            this.groupRoute = `/${service}`
+        }
         this.service = indexService[service]
         this._middleWare()
     }

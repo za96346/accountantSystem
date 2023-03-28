@@ -11,7 +11,7 @@ class donationTransRouter extends routeAbs {
         })
     }
     _middleWare() {
-        this.app.group('/donationTrans', (route) => {
+        this.app.group(this.groupRoute, (route) => {
             this._routers(route);
         });
     }

@@ -1,6 +1,12 @@
 <template>
     <!-- Modal -->
-    <ModalEdit :type="type" :open="open" :onClose="onClose" :donationValue="value" :onSave="onSave" />
+    <ModalEdit
+        :type="type"
+        :open="open"
+        :onClose="onClose"
+        :donationValue="value"
+        :onSave="onSave"
+    />
 
     <!-- searchBar -->
     <div class="searchBar">
@@ -51,12 +57,12 @@
 <script lang="js">
 import { reactive, toRefs, onUnmounted } from 'vue';
 import { mapState } from 'vuex';
+import { Modal } from 'ant-design-vue';
 import SearchBar from './component/SearchBar.vue';
 import { indexColumns } from './method/columns';
 import ModalEdit from './component/ModalEdit.vue';
 import { donationTransValue } from '@/static';
 import api from '@/method/api';
-import { Modal } from 'ant-design-vue';
 import store from '@/vueX/store';
 
 export default {
@@ -65,61 +71,61 @@ export default {
         const state = reactive({
             open: false,
             type: '',
-            value: donationTransValue // 預設值
-        })
+            value: donationTransValue, // 預設值
+        });
         const onClose = () => {
             Object.assign(state, {
                 open: false,
                 type: '',
-                value: donationTransValue
-            })
-            api.getDonationTrans()
-        }
+                value: donationTransValue,
+            });
+            api.getDonationTrans();
+        };
         onUnmounted(() => {
-            store.dispatch('clearDonationTrans', [])
-        })
+            store.dispatch('clearDonationTrans', []);
+        });
         return {
             columns: indexColumns,
             onOpen: () => {
                 Object.assign(state, {
                     open: true,
                     type: 'create',
-                    value: donationTransValue
-                })
+                    value: donationTransValue,
+                });
             },
             onClose,
             onSave: async (v) => {
                 if (state.type === 'edit') {
-                    const res = await api.updateDonationTrans(v)
+                    const res = await api.updateDonationTrans(v);
                     if (res) onClose();
                 } else if (state.type === 'create') {
-                    const res = await api.createDonationTrans(v)
+                    const res = await api.createDonationTrans(v);
                     if (res) onClose();
                 }
             },
             handleMenuClick: (v, row) => {
                 if (v.key === 'delete') {
                     Modal.confirm({
-                        okText: "確認刪除",
+                        okText: '確認刪除',
                         cancelText: '取消',
                         content: `是否要刪除 訂單 ${row?.id}`,
                         onOk: () => {
                             api.deleteDonationTrans(row).then(() => {
-                                api.getDonationTrans()
-                            })
-                        }
-                    })
+                                api.getDonationTrans();
+                            });
+                        },
+                    });
                 } else {
                     Object.assign(state, {
                         open: true,
                         type: v.key,
-                        value: { ...row }
-                    })
+                        value: { ...row },
+                    });
                 }
             },
             download: api.downloadDonationTransCSV,
             ...toRefs(state),
-        }
+        };
     },
     components: { SearchBar, ModalEdit },
     computed: {
@@ -144,5 +150,3 @@ export default {
     align-items: flex-start;
 }
 </style>
-
-

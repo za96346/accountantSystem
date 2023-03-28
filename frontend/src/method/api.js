@@ -1,197 +1,201 @@
+import axios from 'axios';
 import store from '@/vueX/store';
-import axios from 'axios'
 import FullMessage from './notice';
 
 const clearAll = () => {};
 
 class ApiControl {
-    constructor () {
-        this.baseUrl = 'http://127.0.0.1:4500'
+    constructor() {
+        console.log(process.env.VUE_APP_API);
+        this.baseUrl = process.env.VUE_APP_API;
         this.route = {
             donationTrans: 'donationTrans/data',
             dwnTrans: 'donationTrans/csv',
-            login: 'entry/login'
+            login: 'entry/login',
         };
-        this.getDonationTrans = this.getDonationTrans.bind(this)
-        this.updateDonationTrans = this.updateDonationTrans.bind(this)
-        this.createDonationTrans = this.createDonationTrans.bind(this)
-        this.deleteDonationTrans = this.deleteDonationTrans.bind(this)
-        this.downloadDonationTransCSV = this.downloadDonationTransCSV.bind(this)
+        this.getDonationTrans = this.getDonationTrans.bind(this);
+        this.updateDonationTrans = this.updateDonationTrans.bind(this);
+        this.createDonationTrans = this.createDonationTrans.bind(this);
+        this.deleteDonationTrans = this.deleteDonationTrans.bind(this);
+        this.downloadDonationTransCSV = this.downloadDonationTransCSV.bind(this);
     }
 
-    async GET ({
+    async GET({
         url,
         params = {},
         successShow = true,
-        FailShow = true
+        FailShow = true,
     }) {
         const token = localStorage.getItem('token');
         try {
-            const res = await axios.get(`${this.baseUrl}/${url}`, { params: { ...params, token } })
+            const res = await axios.get(`${this.baseUrl}/${url}`, { params: { ...params, token } });
             if (successShow) {
-                FullMessage.success(res.data.message)
+                FullMessage.success(res.data.message);
             }
             return {
                 ...res.data,
-                status: true
-            }
+                status: true,
+            };
         } catch (e) {
             if (e.response.status >= 510) {
-                clearAll()
+                clearAll();
             }
             if (FailShow) {
-                FullMessage.error(e.response.data.message)
+                FullMessage.error(e.response.data.message);
             }
             return {
                 ...e.response.data,
-                status: false
-            }
+                status: false,
+            };
         }
     }
 
-    async POST ({
+    async POST({
         url,
         body,
         params = {},
         successShow = true,
-        FailShow = true
+        FailShow = true,
     }) {
         const token = localStorage.getItem('token');
         try {
             const res = await axios.post(`${this.baseUrl}/${url}`, body, {
                 headers: {
-                    token
+                    token,
                 },
-                params: { ...params }
-            })
+                params: { ...params },
+            });
             if (successShow) {
-                FullMessage.success(res.data.message)
+                FullMessage.success(res.data.message);
             }
             return {
                 ...res.data,
-                status: true
-            }
+                status: true,
+            };
         } catch (e) {
             if (e.response?.status >= 510) {
-                clearAll()
+                clearAll();
             }
             if (FailShow) {
-                FullMessage.error(e.response?.data?.message)
+                FullMessage.error(e.response?.data?.message);
             }
             return {
                 ...e.response?.data,
-                status: false
-            }
+                status: false,
+            };
         }
     }
 
-    async PUT ({
+    async PUT({
         url,
         body,
         params = {},
         successShow = true,
-        FailShow = true
+        FailShow = true,
     }) {
         const token = localStorage.getItem('token');
         try {
             const res = await axios.put(`${this.baseUrl}/${url}`, body, {
                 headers: {
-                    token
+                    token,
                 },
-                params: { ...params }
-            })
+                params: { ...params },
+            });
             if (successShow) {
-                FullMessage.success(res.data.message)
+                FullMessage.success(res.data.message);
             }
             return {
                 ...res.data,
-                status: true
-            }
+                status: true,
+            };
         } catch (e) {
             if (e.response.status >= 510) {
-                clearAll()
+                clearAll();
             }
             if (FailShow) {
-                FullMessage.error(e.response.data.message)
+                FullMessage.error(e.response.data.message);
             }
             return {
                 ...e.response.data,
-                status: false
-            }
+                status: false,
+            };
         }
     }
 
-    async DELETE ({
+    async DELETE({
         url,
         params = {},
         successShow = true,
-        FailShow = true
+        FailShow = true,
     }) {
         const token = localStorage.getItem('token');
         try {
             const res = await axios.delete(`${this.baseUrl}/${url}`, {
                 headers: {
-                    token
+                    token,
                 },
-                params: { ...params }
-            })
+                params: { ...params },
+            });
             if (successShow) {
-                FullMessage.success(res.data.message)
+                FullMessage.success(res.data.message);
             }
             return {
                 ...res.data,
-                status: true
-            }
+                status: true,
+            };
         } catch (e) {
             if (e.response.status >= 510) {
-                clearAll()
+                clearAll();
             }
             if (FailShow) {
-                FullMessage.error(e.response.data.message)
+                FullMessage.error(e.response.data.message);
             }
             return {
                 ...e.response.data,
-                status: false
-            }
+                status: false,
+            };
         }
     }
 
     // 扣款管理
-    async getDonationTrans () {
-        const params = {...store.state.donationSearchBar}
+    async getDonationTrans() {
+        const params = { ...store.state.donationSearchBar };
         const res = await this.GET({
             url: this.route.donationTrans,
             params,
-            successShow: false
-        })
+            successShow: false,
+        });
         if (res.status) {
-            store.commit('updateDonationTrans', res.data)
+            store.commit('updateDonationTrans', res.data);
         }
     }
-    async updateDonationTrans (data) {
+
+    async updateDonationTrans(data) {
         const res = await this.POST({
             url: this.route.donationTrans,
-            body: data
-        })
-        return res.status
+            body: data,
+        });
+        return res.status;
     }
-    async createDonationTrans (data) {
+
+    async createDonationTrans(data) {
         const res = await this.PUT({
             url: this.route.donationTrans,
-            body: data
-        })
-        return res.status
+            body: data,
+        });
+        return res.status;
     }
-    async deleteDonationTrans (data) {
+
+    async deleteDonationTrans(data) {
         const res = await this.DELETE({
             url: this.route.donationTrans,
-            params: data
-        })
-        return res.status
+            params: data,
+        });
+        return res.status;
     }
 
     // 下載 扣款管理
-    async downloadDonationTransCSV () {
+    async downloadDonationTransCSV() {
         // 戴上 crypto key iv
         const cryptKey = localStorage.getItem('cryptKey');
         const cryptIV = localStorage.getItem('cryptIV');
@@ -199,32 +203,32 @@ class ApiControl {
             ...store.state.donationSearchBar,
             cryptIV,
             cryptKey,
-        }
+        };
         const res = await this.GET({
             url: this.route.dwnTrans,
             params,
-        })
+        });
 
-        const link = document.createElement('a')
-        link.href = res.data
-        link.download = 'customers.csv'
-        link.click()
-        setTimeout(() => URL.revokeObjectURL(link.href), 0)
-        return res
+        const link = document.createElement('a');
+        link.href = res.data;
+        link.download = 'customers.csv';
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 0);
+        return res;
     }
 
     // 登入
     async login(data) {
         const res = await this.POST({
             url: this.route.login,
-            body: data
-        })
-        localStorage.setItem('token', res?.token)
+            body: data,
+        });
+        localStorage.setItem('token', res?.token);
         if (res.status) {
-            store.commit('setUser', res.selfInfo)
-            location.href = "/home"
+            store.commit('setUser', res.selfInfo);
+            window.location.href = '/home';
         }
-        return res
+        return res;
     }
 }
-export default new ApiControl()
+export default new ApiControl();

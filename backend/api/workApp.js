@@ -15,6 +15,7 @@ class workApp {
     // 登入
     async login(body) {
         try {
+            console.log(this.url + this.route.login)
             const res = await axios.post(this.url + this.route.login, {...body, IsAccountSystem: true})
             return {
                 status: true,

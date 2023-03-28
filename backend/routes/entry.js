@@ -11,7 +11,7 @@ class entryRouter extends routeAbs {
         })
     }
     _middleWare() {
-        this.app.group('/entry', (route) => {
+        this.app.group(this.groupRoute, (route) => {
             this._routers(route);
         });
     }

@@ -2,11 +2,24 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const url = require('url')
 
-require('dotenv').config();
+// 依據還竟 仔入 env
+if (process.env['NODE_ENV'] === "production") {
+	require('dotenv').config({
+		path: './.env.production.local'
+	});
+	console.log('production', process.env['REQUEST_SERVER_URL'])
+} else {
+	require('dotenv').config({
+		path: './.env.development.local'
+	});
+	console.log('dev', process.env['REQUEST_SERVER_URL'])
+}
+
 const session = require('express-session');
 const cors = require('cors');
-var logger = require('express-logger');
+// var logger = require('express-logger');
 const expressJWT = require('express-jwt');
 require('express-group-routes');
 require('csv-express')
@@ -22,7 +35,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // middle ware
-app.use(logger({ path: './logfile.txt' }));
+// app.use(logger({ path: './logfile.txt' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -33,6 +46,10 @@ app.use(cors({
 	"preflightContinue": false,
 	"optionsSuccessStatus": 200
 }));
+
+// app.use(function(req) {
+// 	console.log(url.parse(req.url, true).pathname)
+// })
 
 // 此伺服器的token parser
 app.use(expressJWT.expressjwt({
@@ -75,7 +92,6 @@ app.use(function (err, req, res, next) {
 // 	resave: false, // 固定寫法
 // 	saveUninitialized: true, // 固定寫法
 // }));
-
 indexRouter(app)
 // catch 404 and forward to error handler
 // app.use((req, res, next) => {
