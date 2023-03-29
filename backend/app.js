@@ -47,9 +47,10 @@ app.use(cors({
 	"optionsSuccessStatus": 200
 }));
 
-// app.use(function(req) {
-// 	console.log(url.parse(req.url, true).pathname)
-// })
+app.use(function(req, res, next) {
+	console.log(req.url)
+	next()
+})
 
 // 此伺服器的token parser
 app.use(expressJWT.expressjwt({
@@ -63,7 +64,7 @@ app.use(expressJWT.expressjwt({
 		}
 	},
 	isRevoked: async (req, token) => {
-		// console.log('token => ', token.payload)
+		console.log('token => ', token.payload)
 		req.User = {...token.payload}?.user || {}
 		req.WorkAppToken = {...token.payload}?.workAppToken || ''
 
@@ -76,7 +77,7 @@ app.use(expressJWT.expressjwt({
 		if (new Date() - err.inner.expiredAt < 5000) { return;}
 		throw "登入憑證過期 請重新登入";
 	},
-}).unless({ path: ['/entry/login'] }));
+}).unless({ path: ['/entry/login', '/accountantSystemApi/entry/login'] }));
 
 app.use(function (err, req, res, next) {
 	if (err.name === "登入憑證過期 請重新登入") {

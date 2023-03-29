@@ -51,7 +51,7 @@ services:
     tty: true        # docker run -t
     environment:
       MYSQL_ROOT_PASSWORD: siou0722
-      #  MYSQL_USER: wordpress
+      # MYSQL_USER: root
       #  MYSQL_PASSWORD: wordpress
       MYSQL_DATABASE: accountantSystem
       expose: 3306
