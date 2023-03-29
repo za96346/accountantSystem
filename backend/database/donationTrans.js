@@ -84,6 +84,40 @@ class donationTrans extends databaseAbs {
         });
     }
 
+    // 資料驗證
+    validData(data) {
+        if (!data?.amount) this.log = ', 金額 驗證失敗'
+        if (!data?.cycle) this.log = ', 週期 驗證失敗'
+        if (!data?.cyclePeriod) this.log = ', 週期授權期間 驗證失敗'
+        if (data?.authPeriod === null) this.log = ', 授權期數 驗證失敗'
+
+        // 信用卡驗證
+        if (!data?.creditNumber) this.log = ', 信用卡卡號 驗證失敗'
+        // console.log(data?.creditNumber)
+        if (data?.creditNumber?.length !== 16) this.log = ', 信用卡卡號 格式錯誤'
+        if (isNaN(data?.creditNumber)) this.log = ', 信用卡卡號 請填入數字'
+
+        // 信用卡 到期日 驗證
+        if (!data?.creditMaturity) this.log = ', 信用卡到期日 驗證失敗'
+        if (data?.creditMaturity?.length !== 5) this.log = ', 信用卡到期日 格式錯誤'
+
+        // 商品名稱 驗證
+        if (!data?.productName) this.log = ', 商品名稱 驗證失敗'
+        
+        // 付款人 email 驗證
+        if (!data?.consumerEmail) this.log = ', 付款人 email 驗證失敗'
+        if (data?.consumerEmail?.indexOf('@') === -1) this.log = ', 付款人 email 格式錯誤'
+
+        // this.log = JSON.stringify(data)
+        if (this.log?.length > 0) {
+            this.statusCode = 422
+            throw new Error()
+        }
+
+        // 加密卡號
+        data.creditNumber = this.crypto.encrypt(this._cryptKey, this._cryptIV, data?.creditNumber)
+    }
+
     // 獲取範圍資料
     async getRangeData({
         where = {}
@@ -98,6 +132,8 @@ class donationTrans extends databaseAbs {
     async updateData({
         data = {},
     }) {
+        this.validData(data)
+        console.log(data?.creditNumber)
         const res = await this.fullStruct.update(data, {
             where: {
                 id: data?.id,
@@ -112,6 +148,8 @@ class donationTrans extends databaseAbs {
     async createData({
         data = {},
     }) {
+        this.validData(data)
+        console.log(data?.creditNumber)
         const res = await this.fullStruct.create(data)
         return res
     }

@@ -3,8 +3,6 @@ const serviceAbs = require('./serviceAbs');
 /* GET home page. */
 class donationTransService extends serviceAbs {
     #_csvField;
-    #_cryptKey;
-    #_cryptIV;
     constructor() {
         super();
         this.#_csvField = [
@@ -28,8 +26,6 @@ class donationTransService extends serviceAbs {
             { label: "收件人 Email", value: 'recipientEmail' },
             { label: "Notify URL", value: 'notifyUrl' },
         ]
-        this.#_cryptKey =  process.env["CRYPT_SCRECT"];
-        this.#_cryptIV =  process.env["CRYPT_IV"];
     }
 
     getDonationTrans() {
@@ -43,9 +39,9 @@ class donationTransService extends serviceAbs {
                     data,
                 });
             } catch {
-                res.statusCode = 400
+                res.statusCode = this.DB.donationTrans.statusCode
                 return res.json({
-                    message: this.statusText.fetchFail,
+                    message: this.statusText.fetchFail + this.DB.donationTrans.log,
                 });
             }
         }
@@ -53,23 +49,19 @@ class donationTransService extends serviceAbs {
     updateDonationTrans() {
         return async (req, res, next) => {
             try {
-                const afterCrypt = this.encrypt(this.#_cryptKey, this.#_cryptIV, req.body?.creditNumber)
                 await this.DB.donationTrans.updateData({
                     data: {
                         ...req.body,
-                        creditNumber: afterCrypt,
-                        notifyUrl: '',
                         lastUserEdit: req.User?.UserName
                     },
                 })
                 return res.json({
                     message: this.statusText.updateSuccess,
                 });
-            } catch(e) {
-                console.log(e)
-                res.statusCode = 400
+            } catch {
+                res.statusCode = this.DB.donationTrans.statusCode
                 return res.json({
-                    message: this.statusText.updateFail,
+                    message: this.statusText.updateFail + this.DB.donationTrans.log,
                 });
             }
         }
@@ -77,12 +69,9 @@ class donationTransService extends serviceAbs {
     createDonationTrans() {
         return async (req, res, next) => {
             try {
-                const afterCrypt = this.encrypt(this.#_cryptKey, this.#_cryptIV, req.body?.creditNumber)
                 await this.DB.donationTrans.createData({
                     data:  {
                         ...req.body,
-                        creditNumber: afterCrypt,
-                        notifyUrl: '',
                         lastUserEdit: req.User?.UserName
                     },
                 })
@@ -90,9 +79,9 @@ class donationTransService extends serviceAbs {
                     message: this.statusText.createSuccess,
                 });
             } catch {
-                res.statusCode = 400
+                res.statusCode = this.DB.donationTrans.statusCode
                 return res.json({
-                    message: this.statusText.createFail,
+                    message: this.statusText.createFail + this.DB.donationTrans.log
                 });
             }
         }
@@ -107,9 +96,9 @@ class donationTransService extends serviceAbs {
                     message: this.statusText.deleteSuccess
                 });
             } catch {
-                res.statusCode = 400
+                res.statusCode = this.DB.donationTrans.statusCode
                 return res.json({
-                    message: this.statusText.deleteFail,
+                    message: this.statusText.deleteFail + this.DB.donationTrans.log,
                 });
             }
         }
@@ -126,9 +115,8 @@ class donationTransService extends serviceAbs {
                 }))
                 console.log(decryptData)
                 return this.downloadResource(res, this.#_csvField, decryptData)
-            } catch(e) {
-                console.log(e)
-                res.statusCode = 400
+            } catch {
+                res.statusCode = this.DB.donationTrans.statusCode
                 return res.json({
                     message: this.statusText.dwnloadFail + '，請確認金鑰是否正確',
                 });

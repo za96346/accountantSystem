@@ -17,4 +17,17 @@ module.exports = defineConfig({
             // },
         },
     },
+    configureWebpack: (config) => {
+        // 为生产环境修改配置...
+        if (process.env.NODE_ENV === 'production') {
+            // eslint-disable-next-line no-param-reassign
+            config.mode = 'production';
+            // 打包文件大小配置
+            // eslint-disable-next-line no-param-reassign
+            config.performance = {
+                maxEntrypointSize: 10000000,
+                maxAssetSize: 30000000,
+            };
+        }
+    },
 });
