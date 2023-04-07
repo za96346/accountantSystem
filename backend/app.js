@@ -12,11 +12,6 @@ const expressJWT = require('express-jwt');
 require('express-group-routes');
 require('csv-express')
 
-// router
-const indexRouter = require('./routes/index');
-const workAppApi = require('./api/workApp');
-const app = express();
-
 
 // 依據還竟 仔入 env
 if (process.env['NODE_ENV'] === "production") {
@@ -24,12 +19,22 @@ if (process.env['NODE_ENV'] === "production") {
 		path: './.env.production.local'
 	});
 	console.log('production', process.env['REQUEST_SERVER_URL'])
-	app.use('/accountantSystemApi', express.static(path.join(__dirname, 'public')));
 } else {
 	require('dotenv').config({
 		path: './.env.development.local'
 	});
 	console.log('dev', process.env['REQUEST_SERVER_URL'])
+}
+
+// 一定要先仔入 env 才能 叫
+// router
+const indexRouter = require('./routes/index');
+const workAppApi = require('./api/workApp');
+
+const app = express();
+if (process.env['NODE_ENV'] === "production") {
+	app.use('/accountantSystemApi', express.static(path.join(__dirname, 'public')));
+} else {
 	app.use(express.static(path.join(__dirname, 'public')));
 }
 
