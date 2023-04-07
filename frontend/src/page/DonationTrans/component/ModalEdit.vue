@@ -55,7 +55,7 @@
                         ref="select"
                         :options="cycleOption"
                         v-model:value="formState.cycle"
-                        @change="handleChange"
+                        @change="handleCycleChange"
                     />
                 </a-form-item>
                 <!-- 週期 是 年份 -->
@@ -122,7 +122,11 @@
                     label="信用卡到期日"
                     name="creditMaturity"
                 >
-                    <a-input v-model:value="formState.creditMaturity" maxlength='5' />
+                    <a-input
+                        v-model:value="formState.creditMaturity"
+                        maxlength='5'
+                        placeholder="YY/MM"
+                    />
                 </a-form-item>
                 <a-form-item
                     :required="true"
@@ -210,9 +214,26 @@ export default defineComponent({
             props.onClose();
         };
 
+        // 監聽當 週期更改 變 清空 週期授權
+        const handleCycleChange = (v) => {
+            console.log(v);
+            Object.assign(formState, {
+                cyclePeriod: '',
+            });
+        };
+
         // 掛載 props 初始直
         watchEffect(() => {
-            Object.assign(formState, props.donationValue);
+            if (props.donationValue?.cycle === 'Y') {
+                const cyclePeriod = props.donationValue?.cyclePeriod || '';
+                Object.assign(formState, {
+                    ...props.donationValue,
+                    cyclePeriodMonth: cyclePeriod?.substring(0, 2),
+                    cyclePeriodDay: cyclePeriod?.substring(2, 4),
+                });
+            } else {
+                Object.assign(formState, props.donationValue);
+            }
         });
 
         // 監聽當 週期改變成 每年時
@@ -222,13 +243,6 @@ export default defineComponent({
                     cyclePeriod: `${formState?.cyclePeriodMonth || ''}${formState?.cyclePeriodDay || ''}`,
                 });
             }
-        });
-
-        // 監聽當 週期更改 變 清空 週期授權
-        watch(() => formState.cycle, () => {
-            Object.assign(formState, {
-                cyclePeriod: '',
-            });
         });
 
         // 監聽當 信用卡 改變時 加入 空白符
@@ -256,6 +270,7 @@ export default defineComponent({
         return {
             handleOk,
             handleCancel,
+            handleCycleChange,
             cycleOption,
             cyclePeriodOption,
             formState,

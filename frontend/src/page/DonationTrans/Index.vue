@@ -50,6 +50,22 @@
                     </a-dropdown>
                 </span>
             </template>
+            <template v-if="column.dataIndex === 'cycle'">
+                {{ cycleOption.find((item) => item?.value === record?.cycle)?.label || '' }}
+            </template>
+            <template v-if="column.dataIndex === 'cyclePeriod'">
+                <div v-if="record?.cycle === 'Y'">
+                    {{ record?.cyclePeriod?.substring(0, 2) }}
+                    /
+                    {{ record?.cyclePeriod?.substring(2, 4) }}
+                </div>
+                <div v-else>
+                    {{
+                        cyclePeriodOption[record?.cycle]
+                            ?.find((item) => item?.value === record?.cyclePeriod)?.label
+                    }}
+                </div>
+            </template>
         </template>
     </a-table>
 </template>
@@ -61,7 +77,7 @@ import { Modal } from 'ant-design-vue';
 import SearchBar from './component/SearchBar.vue';
 import { indexColumns } from './method/columns';
 import ModalEdit from './component/ModalEdit.vue';
-import { donationTransValue } from '@/static';
+import { donationTransValue, cycleOption, cyclePeriodOption } from '@/static';
 import api from '@/method/api';
 import store from '@/vueX/store';
 
@@ -125,6 +141,8 @@ export default {
             },
             download: api.downloadDonationTransCSV,
             ...toRefs(state),
+            cycleOption,
+            cyclePeriodOption,
         };
     },
     components: { SearchBar, ModalEdit },
