@@ -4,18 +4,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const url = require('url')
 
-// 依據還竟 仔入 env
-if (process.env['NODE_ENV'] === "production") {
-	require('dotenv').config({
-		path: './.env.production.local'
-	});
-	console.log('production', process.env['REQUEST_SERVER_URL'])
-} else {
-	require('dotenv').config({
-		path: './.env.development.local'
-	});
-	console.log('dev', process.env['REQUEST_SERVER_URL'])
-}
 
 const session = require('express-session');
 const cors = require('cors');
@@ -27,19 +15,34 @@ require('csv-express')
 // router
 const indexRouter = require('./routes/index');
 const workAppApi = require('./api/workApp');
-
 const app = express();
+
+
+// 依據還竟 仔入 env
+if (process.env['NODE_ENV'] === "production") {
+	require('dotenv').config({
+		path: './.env.production.local'
+	});
+	console.log('production', process.env['REQUEST_SERVER_URL'])
+	app.use('/accountantSystemApi', express.static(path.join(__dirname, 'public')));
+} else {
+	require('dotenv').config({
+		path: './.env.development.local'
+	});
+	console.log('dev', process.env['REQUEST_SERVER_URL'])
+	app.use(express.static(path.join(__dirname, 'public')));
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
 
 // middle ware
 // app.use(logger({ path: './logfile.txt' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
 	"origin": "*",
 	"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
