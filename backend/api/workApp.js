@@ -5,11 +5,13 @@ class workApp {
     url;
     constructor() {
         this.url =  process.env['REQUEST_SERVER_URL'];
+        console.log('request server url => ', this.url)
         this.route = {
             login: "entry/login",
             selfInfo: "user/my",
             checkAccess: "entry/checkAccess",
         }
+        // this.login = this.login.bind(this)
     }
 
     // 登入
