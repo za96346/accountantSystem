@@ -1,4 +1,7 @@
 <template>
+    <Loading :active="isLoading"
+                 :can-cancel="false"
+                 :is-full-page="true"/>
     <div class="rootMain">
         <a-menu
             v-if="router.currentRoute.value.fullPath !== '/login'"
@@ -32,16 +35,19 @@
 </template>
 <script lang="js">
 import { defineComponent, ref } from 'vue';
+import { mapState } from 'vuex';
 import {
     MailOutlined,
 } from '@ant-design/icons-vue';
 // import { MenuProps } from 'ant-design-vue';
 import { RouterView, useRouter } from 'vue-router';
+import Loading from 'vue-loading-overlay';
 
 export default defineComponent({
     components: {
         MailOutlined,
         RouterView,
+        Loading,
     },
     setup: () => {
         const router = useRouter();
@@ -64,6 +70,11 @@ export default defineComponent({
             titleClick,
             router,
         };
+    },
+    computed: {
+        ...mapState([
+            'isLoading',
+        ]),
     },
 });
 </script>

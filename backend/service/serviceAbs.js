@@ -30,7 +30,7 @@ class serviceAbs {
         const json2csv = new Parser.Parser({ fields });
         const csv = json2csv.parse(data);
 
-        fs.writeFile(`./public/csv/${fileName}`, csv, () => {
+        fs.writeFile(`./public/csv/${fileName}`, '\ufeff' + csv, () => {
             res.download(`./public/csv/${fileName}`);
             res.send({
                 data: process.env['DOWNLOAD_URL'] + 'csv/' + fileName,
@@ -38,7 +38,19 @@ class serviceAbs {
             })
         })
     }
- 
+    
+    // 處理錯誤
+    handleError({
+        res, error, prefixMsg
+    }) {
+        const errorObj = JSON.parse(error?.message || '{}');
+        console.log('errorObj => ', errorObj)
+        res.statusCode = errorObj?.statusCode || 403
+        res.json({
+            message: prefixMsg + ',' + (errorObj?.msg || ''),
+        });
+        return errorObj
+    }
 }
 
 module.exports = serviceAbs;

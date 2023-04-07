@@ -18,7 +18,7 @@ class routeAbs {
         } else {
             this.groupRoute = `/${service}`
         }
-        this.service = indexService[service]
+        this.service = new indexService()[service]
         this._middleWare()
     }
 

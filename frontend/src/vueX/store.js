@@ -15,8 +15,8 @@ const store = createStore({
     },
     mutations: {
         // 將state設定為參數
-        Loaded(state) {
-            state.getters.isLoading = !state.getters.isLoading;
+        Loaded(state, payload) {
+            state.isLoading = payload;
         },
 
         // 要設定 金鑰

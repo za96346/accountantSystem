@@ -1,6 +1,7 @@
 // 引入 sequelize 套件
 const { Sequelize } = require('sequelize');
 const crypto = require('../method/crypto')
+const logListener = require('../method/listener/LogListener')
 
 // 422 驗證資料失敗
 
@@ -17,7 +18,6 @@ class databaseAbs {
     // log
 
     log; // log
-    statusCode; // 404 or any
     constructor() {
         const database = process.env.DATA_BASE_NAME;
         const userName = process.env.DATA_BASE_USER;
@@ -42,8 +42,6 @@ class databaseAbs {
             'cryptIV',
             'cryptKey'
         ]
-
-        this.statusCode = 400
     }
 
     // 過濾 空的
@@ -69,6 +67,16 @@ class databaseAbs {
                 }
                 return accr
             }, {}) 
+    }
+
+    // 丟出 錯誤
+    throwError({ msg, statusCode }) {
+        console.log(msg, statusCode)
+        const errorText = JSON.stringify({
+            msg: msg,
+            statusCode: statusCode,
+        })
+        throw new Error(errorText)
     }
 
     get _cryptKey() {

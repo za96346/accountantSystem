@@ -6,6 +6,7 @@ import router from './route';
 import 'ant-design-vue/dist/antd.css';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'vue-loading-overlay/dist/css/index.css';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import store from './vueX/store';

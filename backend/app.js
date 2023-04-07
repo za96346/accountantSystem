@@ -47,11 +47,6 @@ app.use(cors({
 	"optionsSuccessStatus": 200
 }));
 
-app.use(function(req, res, next) {
-	console.log(req.url)
-	next()
-})
-
 // 此伺服器的token parser
 app.use(expressJWT.expressjwt({
 	secret: process.env['TOKEN_PASSWORD'],
@@ -64,52 +59,35 @@ app.use(expressJWT.expressjwt({
 		}
 	},
 	isRevoked: async (req, token) => {
-		console.log('token => ', token.payload)
+		// console.log('token => ', token.payload)
 		req.User = {...token.payload}?.user || {}
 		req.WorkAppToken = {...token.payload}?.workAppToken || ''
-
 		// workapp token 驗證
 		const data = await workAppApi.checkToken(req.WorkAppToken);
 		// console.log("token workapp result => ", data);
+		if (!data?.status) {
+			throw new Error(JSON.stringify({
+				msg: "登入憑證過期 請重新登入",
+				statusCode: 401,
+			}));
+		}
 		return !data?.status
 	},
 	onExpired: async (req, err) => {
 		if (new Date() - err.inner.expiredAt < 5000) { return;}
-		throw "登入憑證過期 請重新登入";
 	},
 }).unless({ path: ['/entry/login', '/accountantSystemApi/entry/login'] }));
 
-app.use(function (err, req, res, next) {
-	if (err.name === "登入憑證過期 請重新登入") {
-	  	res.status(401).send({
-			message: "invalid token..."
-	  	});
-	} else {
-	  	next(err);
-	}
-});
-// app.use(session({
-// 	secret: process.env["TOKEN_PASSWORD"],
-// 	resave: false, // 固定寫法
-// 	saveUninitialized: true, // 固定寫法
-// }));
 indexRouter(app)
-// catch 404 and forward to error handler
-// app.use((req, res, next) => {
-// 	next(createError(404));
-// });
 
 // error handler
 app.use((err, req, res, next) => {
-	// set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-	// render the error page
-	res.status(err.status || 500);
-	res.render('error');
+	// console.log(err)
+	const error = JSON.parse(err.message)
+	res.status(error?.statusCode || 500);
+	res.json({
+		message: error.msg
+	})
 });
-
-
 
 module.exports = app;

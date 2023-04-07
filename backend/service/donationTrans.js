@@ -26,101 +26,100 @@ class donationTransService extends serviceAbs {
             { label: "收件人 Email", value: 'recipientEmail' },
             { label: "Notify URL", value: 'notifyUrl' },
         ]
+        console.log('constructor')
+        this.getDonationTrans = this.getDonationTrans.bind(this)
+        this.createDonationTrans = this.createDonationTrans.bind(this)
+        this.deleteDonationTrans = this.deleteDonationTrans.bind(this)
+        this.updateDonationTrans = this.updateDonationTrans.bind(this)
+        this.getDonationTransCSV = this.getDonationTransCSV.bind(this)
     }
 
-    getDonationTrans() {
-        return async (req, res, next) => {
-            try {
-                const data = await this.DB.donationTrans.getRangeData({
-                    where: req.query
-                })
-                return res.json({
-                    message: this.statusText.fetchSuccess,
-                    data,
-                });
-            } catch {
-                res.statusCode = this.DB.donationTrans.statusCode
-                return res.json({
-                    message: this.statusText.fetchFail + this.DB.donationTrans.log,
-                });
-            }
+    async getDonationTrans(req, res, next) {
+        try {
+            const data = await this.DB.donationTrans.getRangeData({
+                where: req.query
+            })
+            return res.json({
+                message: this.statusText.fetchSuccess,
+                data,
+            });
+        } catch(error) {
+            this.handleError({
+                res,
+                error,
+                prefixMsg: this.statusText.fetchFail
+            })
         }
     }
-    updateDonationTrans() {
-        return async (req, res, next) => {
-            try {
-                await this.DB.donationTrans.updateData({
-                    data: {
-                        ...req.body,
-                        lastUserEdit: req.User?.UserName
-                    },
-                })
-                return res.json({
-                    message: this.statusText.updateSuccess,
-                });
-            } catch {
-                res.statusCode = this.DB.donationTrans.statusCode
-                return res.json({
-                    message: this.statusText.updateFail + this.DB.donationTrans.log,
-                });
-            }
+    async updateDonationTrans(req, res, next) {
+        try {
+            await this.DB.donationTrans.updateData({
+                data: {
+                    ...req.body,
+                    lastUserEdit: req.User?.UserName
+                },
+            })
+            return res.json({
+                message: this.statusText.updateSuccess,
+            });
+        } catch(error) {
+            this.handleError({
+                res,
+                error,
+                prefixMsg: this.statusText.updateFail
+            })
         }
     }
-    createDonationTrans() {
-        return async (req, res, next) => {
-            try {
-                await this.DB.donationTrans.createData({
-                    data:  {
-                        ...req.body,
-                        lastUserEdit: req.User?.UserName
-                    },
-                })
-                return res.json({
-                    message: this.statusText.createSuccess,
-                });
-            } catch {
-                res.statusCode = this.DB.donationTrans.statusCode
-                return res.json({
-                    message: this.statusText.createFail + this.DB.donationTrans.log
-                });
-            }
+    async createDonationTrans(req, res, next) {
+        try {
+            await this.DB.donationTrans.createData({
+                data:  {
+                    ...req.body,
+                    lastUserEdit: req.User?.UserName
+                },
+            })
+            return res.json({
+                message: this.statusText.createSuccess,
+            });
+        } catch(error) {
+            this.handleError({
+                res,
+                error,
+                prefixMsg: this.statusText.createFail
+            })
         }
     }
-    deleteDonationTrans() {
-        return async (req, res, next) => {
-            try {
-                const data = await this.DB.donationTrans.deleteData({
-                    data: req.query
-                })
-                return res.json({
-                    message: this.statusText.deleteSuccess
-                });
-            } catch {
-                res.statusCode = this.DB.donationTrans.statusCode
-                return res.json({
-                    message: this.statusText.deleteFail + this.DB.donationTrans.log,
-                });
-            }
+    async deleteDonationTrans(req, res, next) {
+        try {
+            const data = await this.DB.donationTrans.deleteData({
+                data: req.query
+            })
+            return res.json({
+                message: this.statusText.deleteSuccess
+            });
+        } catch(error) {
+            this.handleError({
+                res,
+                error,
+                prefixMsg: this.statusText.deleteFail
+            })
         }
     }
-    getDonationTransCSV() {
-        return async (req, res, next) => {
-            try {
-                const data = await this.DB.donationTrans.getRangeData({
-                    where: req.query
-                })
-                const decryptData = JSON.parse(JSON.stringify(data))?.map((item) => ({
-                    ...item,
-                    creditNumber: this.decrypt(req.query?.cryptKey, req.query?.cryptIV, item?.creditNumber)
-                }))
-                console.log(decryptData)
-                return this.downloadResource(res, this.#_csvField, decryptData)
-            } catch {
-                res.statusCode = this.DB.donationTrans.statusCode
-                return res.json({
-                    message: this.statusText.dwnloadFail + '，請確認金鑰是否正確',
-                });
-            }
+    async getDonationTransCSV(req, res, next) {
+        try {
+            const data = await this.DB.donationTrans.getRangeData({
+                where: req.query
+            })
+            const decryptData = JSON.parse(JSON.stringify(data))?.map((item) => ({
+                ...item,
+                creditNumber: this.DB.donationTrans.crypto.decrypt(req.query?.cryptKey, req.query?.cryptIV, item?.creditNumber)
+            }))
+            return this.downloadResource(res, this.#_csvField, decryptData)
+        } catch {
+            res.statusCode = 403
+            return res.json({
+                message: this.statusText.dwnloadFail + '，請確認金鑰是否正確',
+            });
         }
     }
 }

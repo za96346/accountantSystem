@@ -16,7 +16,7 @@ class entryRouter extends routeAbs {
         });
     }
     _routers(route) {
-        route.post('/login', this.service.login())
+        route.post('/login', this.service.login)
     }
 }
 

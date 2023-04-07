@@ -19,4 +19,4 @@ class indexService {
     // }
 }
 
-module.exports = new indexService()
+module.exports = indexService

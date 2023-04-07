@@ -2,7 +2,12 @@ import axios from 'axios';
 import store from '@/vueX/store';
 import FullMessage from './notice';
 
-const clearAll = () => {};
+const clearAll = () => {
+    setTimeout(() => {
+        window.location.href = '/login';
+        localStorage.removeItem('token');
+    }, 1000);
+};
 
 class ApiControl {
     constructor() {
@@ -26,23 +31,26 @@ class ApiControl {
         successShow = true,
         FailShow = true,
     }) {
+        store.commit('Loaded', true);
         const token = localStorage.getItem('token');
         try {
             const res = await axios.get(`${this.baseUrl}/${url}`, { params: { ...params, token } });
             if (successShow) {
                 FullMessage.success(res.data.message);
             }
+            store.commit('Loaded', false);
             return {
                 ...res.data,
                 status: true,
             };
         } catch (e) {
-            if (e.response.status >= 510) {
+            if (e.response.status === 401) {
                 clearAll();
             }
             if (FailShow) {
                 FullMessage.error(e.response.data.message);
             }
+            store.commit('Loaded', false);
             return {
                 ...e.response.data,
                 status: false,
@@ -57,6 +65,7 @@ class ApiControl {
         successShow = true,
         FailShow = true,
     }) {
+        store.commit('Loaded', true);
         const token = localStorage.getItem('token');
         try {
             const res = await axios.post(`${this.baseUrl}/${url}`, body, {
@@ -68,17 +77,19 @@ class ApiControl {
             if (successShow) {
                 FullMessage.success(res.data.message);
             }
+            store.commit('Loaded', false);
             return {
                 ...res.data,
                 status: true,
             };
         } catch (e) {
-            if (e.response?.status >= 510) {
+            if (e.response.status === 401) {
                 clearAll();
             }
             if (FailShow) {
                 FullMessage.error(e.response?.data?.message);
             }
+            store.commit('Loaded', false);
             return {
                 ...e.response?.data,
                 status: false,
@@ -93,6 +104,7 @@ class ApiControl {
         successShow = true,
         FailShow = true,
     }) {
+        store.commit('Loaded', true);
         const token = localStorage.getItem('token');
         try {
             const res = await axios.put(`${this.baseUrl}/${url}`, body, {
@@ -104,17 +116,19 @@ class ApiControl {
             if (successShow) {
                 FullMessage.success(res.data.message);
             }
+            store.commit('Loaded', false);
             return {
                 ...res.data,
                 status: true,
             };
         } catch (e) {
-            if (e.response.status >= 510) {
+            if (e.response.status === 401) {
                 clearAll();
             }
             if (FailShow) {
                 FullMessage.error(e.response.data.message);
             }
+            store.commit('Loaded', false);
             return {
                 ...e.response.data,
                 status: false,
@@ -128,6 +142,7 @@ class ApiControl {
         successShow = true,
         FailShow = true,
     }) {
+        store.commit('Loaded', true);
         const token = localStorage.getItem('token');
         try {
             const res = await axios.delete(`${this.baseUrl}/${url}`, {
@@ -139,17 +154,19 @@ class ApiControl {
             if (successShow) {
                 FullMessage.success(res.data.message);
             }
+            store.commit('Loaded', false);
             return {
                 ...res.data,
                 status: true,
             };
         } catch (e) {
-            if (e.response.status >= 510) {
+            if (e.response.status === 401) {
                 clearAll();
             }
             if (FailShow) {
                 FullMessage.error(e.response.data.message);
             }
+            store.commit('Loaded', false);
             return {
                 ...e.response.data,
                 status: false,
